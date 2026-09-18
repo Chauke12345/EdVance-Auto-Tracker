@@ -1,0 +1,290 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AutoTrack | Register Vehicle</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'workshop/css/style.css' %}"
+    >
+
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="main-header">
+
+        <div class="container header-inner">
+
+            <div>
+
+                <div class="brand">
+                    AutoTrack
+                </div>
+
+                <div class="header-user">
+                    {{ workshop.name }}
+                </div>
+
+            </div>
+
+            <div class="header-user">
+
+                Logged in as
+                <strong>{{ request.user.username }}</strong>
+
+                —
+
+                {{ staff_profile.get_role_display }}
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="container">
+
+
+        <!-- =================================================
+             PAGE INTRODUCTION
+        ================================================== -->
+
+        <section class="card">
+
+            <h1>Register Vehicle</h1>
+
+            <p>
+                Add a vehicle belonging to one of your
+                registered customers.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             VEHICLE FORM
+        ================================================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+                <h2>Vehicle Information</h2>
+            </div>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- CUSTOMER -->
+
+                <p>
+
+                    <label for="{{ form.customer.id_for_label }}">
+                        Customer
+                    </label>
+
+                    {{ form.customer }}
+
+                    {% if form.customer.errors %}
+
+                        {{ form.customer.errors }}
+
+                    {% endif %}
+
+                </p>
+
+
+                <!-- REGISTRATION NUMBER -->
+
+                <p>
+
+                    <label for="{{ form.registration_number.id_for_label }}">
+                        Registration Number
+                    </label>
+
+                    {{ form.registration_number }}
+
+                    {% if form.registration_number.errors %}
+
+                        {{ form.registration_number.errors }}
+
+                    {% endif %}
+
+                </p>
+
+
+                <!-- MAKE -->
+
+                <p>
+
+                    <label for="{{ form.make.id_for_label }}">
+                        Vehicle Make
+                    </label>
+
+                    {{ form.make }}
+
+                    {% if form.make.errors %}
+
+                        {{ form.make.errors }}
+
+                    {% endif %}
+
+                </p>
+
+
+                <!-- MODEL -->
+
+                <p>
+
+                    <label for="{{ form.model.id_for_label }}">
+                        Vehicle Model
+                    </label>
+
+                    {{ form.model }}
+
+                    {% if form.model.errors %}
+
+                        {{ form.model.errors }}
+
+                    {% endif %}
+
+                </p>
+
+
+                <!-- YEAR -->
+
+                <p>
+
+                    <label for="{{ form.year.id_for_label }}">
+                        Year
+                    </label>
+
+                    {{ form.year }}
+
+                    {% if form.year.errors %}
+
+                        {{ form.year.errors }}
+
+                    {% endif %}
+
+                </p>
+
+
+                <!-- COLOUR -->
+
+                <p>
+
+                    <label for="{{ form.colour.id_for_label }}">
+                        Colour
+                    </label>
+
+                    {{ form.colour }}
+
+                    {% if form.colour.errors %}
+
+                        {{ form.colour.errors }}
+
+                    {% endif %}
+
+                </p>
+
+
+                <!-- VIN -->
+
+                <p>
+
+                    <label for="{{ form.vin_number.id_for_label }}">
+                        VIN Number
+                    </label>
+
+                    {{ form.vin_number }}
+
+                    {% if form.vin_number.errors %}
+
+                        {{ form.vin_number.errors }}
+
+                    {% endif %}
+
+                </p>
+
+
+                <!-- =================================================
+                     ACTIONS
+                ================================================== -->
+
+                <div>
+
+                    <button type="submit">
+                        Register Vehicle
+                    </button>
+
+                    <a
+                        href="{% url 'dashboard' %}"
+                        class="btn btn-secondary"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             WORKFLOW HELP
+        ================================================== -->
+
+        <section class="card">
+
+            <h3>Next Step</h3>
+
+            <p>
+                After registering the vehicle, return to the
+                dashboard and create a repair job for it.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             NAVIGATION
+        ================================================== -->
+
+        <p>
+
+            <a href="{% url 'dashboard' %}">
+                ← Back to Dashboard
+            </a>
+
+        </p>
+
+    </main>
+
+</body>
+
+</html>

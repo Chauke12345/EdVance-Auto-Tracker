@@ -1,0 +1,893 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Repair Job {{ repair_job.tracking_number }} | AutoTrack
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'workshop/css/style.css' %}"
+    >
+
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="main-header">
+
+        <div class="container header-inner">
+
+            <div>
+
+                <div class="brand">
+                    AutoTrack
+                </div>
+
+                <div class="header-user">
+                    {{ workshop.name }}
+                </div>
+
+            </div>
+
+
+            <div class="header-user">
+
+                Logged in as
+                <strong>{{ request.user.username }}</strong>
+
+                —
+                {{ staff_profile.get_role_display }}
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN PAGE
+    ====================================================== -->
+
+    <main class="container">
+
+
+        <!-- =================================================
+             MESSAGES
+        ================================================== -->
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="message">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+        <!-- =================================================
+             JOB SUMMARY
+        ================================================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+
+                <h1>
+                    Repair Job
+                    {{ repair_job.tracking_number }}
+                </h1>
+
+            </div>
+
+
+            <div class="info-grid">
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        Current Status
+                    </span>
+
+                    <span class="status-badge">
+                        {{ repair_job.get_status_display }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        Created
+                    </span>
+
+                    <span class="info-value">
+                        {{ repair_job.created_at }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        Estimated Completion
+                    </span>
+
+                    <span class="info-value">
+
+                        {% if repair_job.estimated_completion_date %}
+
+                            {{ repair_job.estimated_completion_date }}
+
+                        {% else %}
+
+                            Not set
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        Assigned To
+                    </span>
+
+                    <span class="info-value">
+
+                        {% if repair_job.assigned_to %}
+
+                            {{ repair_job.assigned_to.user.username }}
+
+                        {% else %}
+
+                            Not assigned
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             UPDATE STATUS
+        ================================================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+                <h2>Update Job Status</h2>
+            </div>
+
+            <p>
+                Change the repair job to its current
+                workshop stage.
+            </p>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="form_type"
+                    value="status"
+                >
+
+
+                <p>
+
+                    <label for="{{ status_form.status.id_for_label }}">
+                        New Status
+                    </label>
+
+                    {{ status_form.status }}
+
+                </p>
+
+
+                {% if status_form.status.errors %}
+
+                    <p>
+                        {{ status_form.status.errors }}
+                    </p>
+
+                {% endif %}
+
+
+                <button type="submit">
+                    Update Status
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             CUSTOMER + VEHICLE
+        ================================================== -->
+
+        <div class="info-grid">
+
+
+            <!-- CUSTOMER -->
+
+            <section class="card">
+
+                <div class="card-title">
+                    <h2>Customer</h2>
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        Name
+                    </span>
+
+                    <span class="info-value">
+                        {{ repair_job.vehicle.customer.full_name }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        Phone
+                    </span>
+
+                    <span class="info-value">
+                        {{ repair_job.vehicle.customer.phone_number }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        Email
+                    </span>
+
+                    <span class="info-value">
+
+                        {% if repair_job.vehicle.customer.email %}
+
+                            {{ repair_job.vehicle.customer.email }}
+
+                        {% else %}
+
+                            Not provided
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- VEHICLE -->
+
+            <section class="card">
+
+                <div class="card-title">
+                    <h2>Vehicle</h2>
+                </div>
+
+
+                <div class="info-grid">
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Registration
+                        </span>
+
+                        <span class="info-value">
+                            {{ repair_job.vehicle.registration_number }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Make
+                        </span>
+
+                        <span class="info-value">
+                            {{ repair_job.vehicle.make }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Model
+                        </span>
+
+                        <span class="info-value">
+                            {{ repair_job.vehicle.model }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Year
+                        </span>
+
+                        <span class="info-value">
+
+                            {% if repair_job.vehicle.year %}
+
+                                {{ repair_job.vehicle.year }}
+
+                            {% else %}
+
+                                Not provided
+
+                            {% endif %}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Colour
+                        </span>
+
+                        <span class="info-value">
+
+                            {% if repair_job.vehicle.colour %}
+
+                                {{ repair_job.vehicle.colour }}
+
+                            {% else %}
+
+                                Not provided
+
+                            {% endif %}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Mileage
+                        </span>
+
+                        <span class="info-value">
+
+                            {% if repair_job.mileage %}
+
+                                {{ repair_job.mileage }} km
+
+                            {% else %}
+
+                                Not provided
+
+                            {% endif %}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            VIN Number
+                        </span>
+
+                        <span class="info-value">
+
+                            {% if repair_job.vehicle.vin_number %}
+
+                                {{ repair_job.vehicle.vin_number }}
+
+                            {% else %}
+
+                                Not provided
+
+                            {% endif %}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- =================================================
+             REPAIR INFORMATION
+        ================================================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+                <h2>Repair Information</h2>
+            </div>
+
+
+            <p>
+                <strong>
+                    Problem / Repair Required
+                </strong>
+            </p>
+
+            <p>
+                {{ repair_job.problem_description }}
+            </p>
+
+
+            <p>
+
+                <strong>
+                    Assigned To:
+                </strong>
+
+                {% if repair_job.assigned_to %}
+
+                    {{ repair_job.assigned_to.user.username }}
+
+                {% else %}
+
+                    Not assigned
+
+                {% endif %}
+
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             ADD WORKSHOP NOTE
+        ================================================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+                <h2>Add Workshop Note</h2>
+            </div>
+
+            <p>
+                Record diagnosis, parts required,
+                repair progress, customer communication,
+                or other workshop updates.
+            </p>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="form_type"
+                    value="note"
+                >
+
+
+                <p>
+
+                    <label for="{{ note_form.note.id_for_label }}">
+                        Workshop Note
+                    </label>
+
+                    {{ note_form.note }}
+
+                </p>
+
+
+                {% if note_form.note.errors %}
+
+                    <p>
+                        {{ note_form.note.errors }}
+                    </p>
+
+                {% endif %}
+
+
+                <button type="submit">
+                    Add Note
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             WORKSHOP NOTES
+        ================================================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+                <h2>Workshop Notes</h2>
+            </div>
+
+
+            {% if job_notes %}
+
+                {% for note in job_notes %}
+
+                    <div class="info-item">
+
+                        <p>
+                            {{ note.note }}
+                        </p>
+
+
+                        <p>
+
+                            <small>
+
+                                Added by:
+
+                                {% if note.staff %}
+
+                                    <strong>
+                                        {{ note.staff.user.username }}
+                                    </strong>
+
+                                {% else %}
+
+                                    Staff member unavailable
+
+                                {% endif %}
+
+                                —
+
+                                {{ note.created_at }}
+
+                            </small>
+
+                        </p>
+
+                    </div>
+
+
+                    {% if not forloop.last %}
+                        <hr>
+                    {% endif %}
+
+                {% endfor %}
+
+
+            {% else %}
+
+                <p>
+                    No workshop notes have been added yet.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- =================================================
+             UPLOAD PHOTOS
+        ================================================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+                <h2>Upload Job Photos</h2>
+            </div>
+
+
+            <p>
+                Upload check-in photos, vehicle damage,
+                repair progress, or completed repair photos.
+                You can select multiple photos at once.
+            </p>
+
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="form_type"
+                    value="photo"
+                >
+
+
+                <!-- PHOTOS -->
+
+                <p>
+
+                    <label for="{{ photo_form.images.id_for_label }}">
+                        Photos
+                    </label>
+
+                    {{ photo_form.images }}
+
+                    <small>
+                        You can select multiple photos at once.
+                    </small>
+
+                </p>
+
+
+                {% if photo_form.images.errors %}
+
+                    <p>
+                        {{ photo_form.images.errors }}
+                    </p>
+
+                {% endif %}
+
+
+                <!-- PHOTO TYPE -->
+
+                <p>
+
+                    <label for="{{ photo_form.photo_type.id_for_label }}">
+                        Photo Type
+                    </label>
+
+                    {{ photo_form.photo_type }}
+
+                </p>
+
+
+                {% if photo_form.photo_type.errors %}
+
+                    <p>
+                        {{ photo_form.photo_type.errors }}
+                    </p>
+
+                {% endif %}
+
+
+                <!-- DESCRIPTION -->
+
+                <p>
+
+                    <label for="{{ photo_form.description.id_for_label }}">
+                        Description
+                    </label>
+
+                    {{ photo_form.description }}
+
+                </p>
+
+
+                {% if photo_form.description.errors %}
+
+                    <p>
+                        {{ photo_form.description.errors }}
+                    </p>
+
+                {% endif %}
+
+
+                <button type="submit">
+                    Upload Photos
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             PHOTO GALLERY
+        ================================================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+                <h2>Job Photos</h2>
+            </div>
+
+
+            {% if job_photos %}
+
+                <div class="photo-grid">
+
+                    {% for photo in job_photos %}
+
+                        <div class="photo-card">
+
+
+                            {% if photo.image %}
+
+                                <img
+                                    src="{{ photo.image.url }}"
+                                    alt="{{ photo.description|default:'Repair job photo' }}"
+                                >
+
+                            {% endif %}
+
+
+                            <div class="photo-info">
+
+                                <p>
+                                    <strong>
+                                        {{ photo.get_photo_type_display }}
+                                    </strong>
+                                </p>
+
+
+                                {% if photo.description %}
+
+                                    <p>
+                                        {{ photo.description }}
+                                    </p>
+
+                                {% endif %}
+
+
+                                <small>
+                                    Uploaded:
+                                    {{ photo.uploaded_at }}
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+            {% else %}
+
+                <p>
+                    No job photos have been uploaded yet.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- =================================================
+             JOB STATUS HISTORY
+        ================================================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+                <h2>Job Status History</h2>
+            </div>
+
+
+            {% if status_history %}
+
+                <div class="timeline">
+
+                    {% for history in status_history %}
+
+                        <div class="timeline-item">
+
+                            <div class="timeline-status">
+                                {{ history.get_status_display }}
+                            </div>
+
+
+                            <div class="timeline-date">
+
+                                {{ history.changed_at }}
+
+                                {% if history.changed_by %}
+
+                                    —
+                                    {{ history.changed_by.user.username }}
+
+                                {% else %}
+
+                                    — System
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+            {% else %}
+
+                <p>
+                    No status changes have been recorded yet.
+                </p>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- =================================================
+             NAVIGATION
+        ================================================== -->
+
+        <section class="card">
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="btn btn-secondary"
+            >
+                ← Back to Dashboard
+            </a>
+
+            <a
+                href="{% url 'staff_logout' %}"
+                class="btn"
+            >
+                Logout
+            </a>
+
+        </section>
+
+
+    </main>
+
+</body>
+
+</html>

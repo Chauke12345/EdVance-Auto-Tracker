@@ -1,0 +1,319 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AutoTrack | Create Repair Job</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'workshop/css/style.css' %}"
+    >
+
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="main-header">
+
+        <div class="container header-inner">
+
+            <div>
+
+                <div class="brand">
+                    AutoTrack
+                </div>
+
+                <div class="header-user">
+                    {{ workshop.name }}
+                </div>
+
+            </div>
+
+
+            <div class="header-user">
+
+                Logged in as
+                <strong>{{ request.user.username }}</strong>
+
+                —
+
+                {{ staff_profile.get_role_display }}
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="container">
+
+
+        <!-- =================================================
+             MESSAGES
+        ================================================== -->
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="message">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+        <!-- =================================================
+             PAGE INTRODUCTION
+        ================================================== -->
+
+        <section class="card">
+
+            <h1>Create Repair Job</h1>
+
+            <p>
+                Select the customer's vehicle and enter
+                the repair information for the workshop.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             REPAIR JOB FORM
+        ================================================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+                <h2>Repair Job Information</h2>
+            </div>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- VEHICLE -->
+
+                <p>
+
+                    <label for="{{ form.vehicle.id_for_label }}">
+                        Vehicle
+                    </label>
+
+                    {{ form.vehicle }}
+
+                    {% if form.vehicle.errors %}
+
+                        {{ form.vehicle.errors }}
+
+                    {% endif %}
+
+                    <small>
+                        Select the customer's registered vehicle.
+                    </small>
+
+                </p>
+
+
+                <!-- PROBLEM DESCRIPTION -->
+
+                <p>
+
+                    <label for="{{ form.problem_description.id_for_label }}">
+                        Problem / Repair Required
+                    </label>
+
+                    {{ form.problem_description }}
+
+                    {% if form.problem_description.errors %}
+
+                        {{ form.problem_description.errors }}
+
+                    {% endif %}
+
+                    <small>
+                        Describe the customer's complaint,
+                        vehicle damage, diagnosis, or repair required.
+                    </small>
+
+                </p>
+
+
+                <!-- MILEAGE -->
+
+                <p>
+
+                    <label for="{{ form.mileage.id_for_label }}">
+                        Current Mileage
+                    </label>
+
+                    {{ form.mileage }}
+
+                    {% if form.mileage.errors %}
+
+                        {{ form.mileage.errors }}
+
+                    {% endif %}
+
+                </p>
+
+
+                <!-- ASSIGNED STAFF -->
+
+                <p>
+
+                    <label for="{{ form.assigned_to.id_for_label }}">
+                        Assigned To
+                    </label>
+
+                    {{ form.assigned_to }}
+
+                    {% if form.assigned_to.errors %}
+
+                        {{ form.assigned_to.errors }}
+
+                    {% endif %}
+
+                    <small>
+                        Select the staff member responsible
+                        for this repair job.
+                    </small>
+
+                </p>
+
+
+                <!-- ESTIMATED COMPLETION -->
+
+                <p>
+
+                    <label for="{{ form.estimated_completion_date.id_for_label }}">
+                        Estimated Completion Date
+                    </label>
+
+                    {{ form.estimated_completion_date }}
+
+                    {% if form.estimated_completion_date.errors %}
+
+                        {{ form.estimated_completion_date.errors }}
+
+                    {% endif %}
+
+                    <small>
+                        This date will also be visible to the customer
+                        on the repair tracking page.
+                    </small>
+
+                </p>
+
+
+                <!-- =================================================
+                     JOB STARTING STATUS
+                ================================================== -->
+
+                <div class="card">
+
+                    <h3>Starting Status</h3>
+
+                    <p>
+                        Every new repair job will automatically
+                        begin as:
+                    </p>
+
+                    <span class="status-badge">
+                        Checked In
+                    </span>
+
+                </div>
+
+
+                <!-- =================================================
+                     ACTIONS
+                ================================================== -->
+
+                <div>
+
+                    <button type="submit">
+                        Create Repair Job
+                    </button>
+
+                    <a
+                        href="{% url 'dashboard' %}"
+                        class="btn btn-secondary"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             WORKFLOW
+        ================================================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+                <h3>What Happens Next?</h3>
+            </div>
+
+            <p>
+                Once the repair job is created, AutoTrack
+                generates a unique tracking number for the job.
+            </p>
+
+            <p>
+                Workshop staff can then manage the repair status,
+                add workshop notes, upload repair photos,
+                and track the complete job history.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             NAVIGATION
+        ================================================== -->
+
+        <p>
+
+            <a href="{% url 'dashboard' %}">
+                ← Back to Dashboard
+            </a>
+
+        </p>
+
+
+    </main>
+
+</body>
+
+</html>

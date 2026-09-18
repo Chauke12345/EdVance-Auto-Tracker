@@ -1,0 +1,537 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Track Your Repair | AutoTrack</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'workshop/css/style.css' %}"
+    >
+
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="main-header">
+
+        <div class="container header-inner">
+
+            <div>
+
+                <div class="brand">
+                    AutoTrack
+                </div>
+
+                <div class="header-user">
+                    Workshop Repair Tracking
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="container">
+
+
+        <!-- =================================================
+             PAGE INTRODUCTION
+        ================================================== -->
+
+        <section class="card">
+
+            <h1>Track Your Repair</h1>
+
+            <p>
+                Check the current progress of your vehicle repair.
+            </p>
+
+            <p>
+                Enter the tracking number provided by the workshop
+                together with your phone number.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             TRACKING FORM
+        ================================================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+                <h2>Repair Tracking</h2>
+            </div>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- TRACKING NUMBER -->
+
+                <p>
+
+                    <label for="{{ form.tracking_number.id_for_label }}">
+                        Tracking Number
+                    </label>
+
+                    {{ form.tracking_number }}
+
+                </p>
+
+
+                {% if form.tracking_number.errors %}
+
+                    <p>
+                        {{ form.tracking_number.errors }}
+                    </p>
+
+                {% endif %}
+
+
+                <!-- PHONE NUMBER -->
+
+                <p>
+
+                    <label for="{{ form.phone_number.id_for_label }}">
+                        Phone Number
+                    </label>
+
+                    {{ form.phone_number }}
+
+                </p>
+
+
+                {% if form.phone_number.errors %}
+
+                    <p>
+                        {{ form.phone_number.errors }}
+                    </p>
+
+                {% endif %}
+
+
+                <button type="submit">
+                    Track Repair
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
+             ERROR MESSAGE
+        ================================================== -->
+
+        {% if error_message %}
+
+            <section class="card">
+
+                <h3>Repair Not Found</h3>
+
+                <p>
+                    {{ error_message }}
+                </p>
+
+                <p>
+                    Please check that your tracking number
+                    and phone number are correct.
+                </p>
+
+            </section>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             REPAIR RESULT
+        ================================================== -->
+
+        {% if repair_job %}
+
+
+            <!-- =================================================
+                 CURRENT STATUS
+            ================================================== -->
+
+            <section class="card">
+
+                <div class="card-title">
+                    <h2>Repair Status</h2>
+                </div>
+
+
+                <div class="info-grid">
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Tracking Number
+                        </span>
+
+                        <span class="info-value">
+                            {{ repair_job.tracking_number }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Current Status
+                        </span>
+
+                        <span class="status-badge">
+                            {{ repair_job.get_status_display }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 VEHICLE + WORKSHOP
+            ================================================== -->
+
+            <div class="info-grid">
+
+
+                <!-- VEHICLE -->
+
+                <section class="card">
+
+                    <div class="card-title">
+                        <h2>Vehicle</h2>
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Registration
+                        </span>
+
+                        <span class="info-value">
+                            {{ repair_job.vehicle.registration_number }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Vehicle
+                        </span>
+
+                        <span class="info-value">
+
+                            {{ repair_job.vehicle.make }}
+                            {{ repair_job.vehicle.model }}
+
+                        </span>
+
+                    </div>
+
+
+                    {% if repair_job.vehicle.year %}
+
+                        <div class="info-item">
+
+                            <span class="info-label">
+                                Year
+                            </span>
+
+                            <span class="info-value">
+                                {{ repair_job.vehicle.year }}
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if repair_job.vehicle.colour %}
+
+                        <div class="info-item">
+
+                            <span class="info-label">
+                                Colour
+                            </span>
+
+                            <span class="info-value">
+                                {{ repair_job.vehicle.colour }}
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </section>
+
+
+                <!-- WORKSHOP -->
+
+                <section class="card">
+
+                    <div class="card-title">
+                        <h2>Workshop</h2>
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Workshop
+                        </span>
+
+                        <span class="info-value">
+                            {{ repair_job.workshop.name }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Contact Number
+                        </span>
+
+                        <span class="info-value">
+                            {{ repair_job.workshop.phone_number }}
+                        </span>
+
+                    </div>
+
+
+                    {% if repair_job.workshop.location %}
+
+                        <div class="info-item">
+
+                            <span class="info-label">
+                                Location
+                            </span>
+
+                            <span class="info-value">
+                                {{ repair_job.workshop.location }}
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================================
+                 REPAIR INFORMATION
+            ================================================== -->
+
+            <section class="card">
+
+                <div class="card-title">
+                    <h2>Repair Information</h2>
+                </div>
+
+
+                <div class="info-grid">
+
+
+                    {% if repair_job.estimated_completion_date %}
+
+                        <div class="info-item">
+
+                            <span class="info-label">
+                                Estimated Completion
+                            </span>
+
+                            <span class="info-value">
+                                {{ repair_job.estimated_completion_date }}
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Repair Started
+                        </span>
+
+                        <span class="info-value">
+                            {{ repair_job.created_at }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 REPAIR PROGRESS
+            ================================================== -->
+
+            <section class="card">
+
+                <div class="card-title">
+                    <h2>Repair Progress</h2>
+                </div>
+
+
+                {% if status_history %}
+
+                    <div class="timeline">
+
+                        {% for history in status_history %}
+
+                            <div class="timeline-item">
+
+                                <div class="timeline-status">
+                                    {{ history.get_status_display }}
+                                </div>
+
+                                <div class="timeline-date">
+                                    {{ history.changed_at }}
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                {% else %}
+
+                    <p>
+                        Your repair is currently at the
+                        <strong>
+                            {{ repair_job.get_status_display }}
+                        </strong>
+                        stage.
+                    </p>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- =================================================
+                 CURRENT REPAIR MESSAGE
+            ================================================== -->
+
+            <section class="card">
+
+                <div class="card-title">
+                    <h2>Current Repair Status</h2>
+                </div>
+
+
+                <p>
+                    Your vehicle is currently at the
+                    <span class="status-badge">
+                        {{ repair_job.get_status_display }}
+                    </span>
+                    stage.
+                </p>
+
+
+                {% if repair_job.status == "ready" %}
+
+                    <div class="message">
+
+                        <strong>
+                            Your vehicle is ready for collection.
+                        </strong>
+
+                        <br>
+
+                        Please contact the workshop before
+                        collecting your vehicle.
+
+                    </div>
+
+
+                {% elif repair_job.status == "collected" %}
+
+                    <div class="message">
+
+                        <strong>
+                            Repair Completed
+                        </strong>
+
+                        <br>
+
+                        This repair job has been completed
+                        and the vehicle has been collected.
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+        {% endif %}
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <section class="card">
+
+            <p>
+                <strong>AutoTrack</strong>
+            </p>
+
+            <p>
+                Workshop Repair Tracking
+            </p>
+
+        </section>
+
+
+    </main>
+
+</body>
+
+</html>

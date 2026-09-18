@@ -1,0 +1,167 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AutoTrack | Staff Login</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'workshop/css/style.css' %}"
+    >
+
+</head>
+
+<body class="login-page">
+
+
+    <div class="login-container">
+
+
+        <!-- =================================================
+             BRAND
+        ================================================== -->
+
+        <div class="login-brand">
+
+            <h1>
+                AutoTrack
+            </h1>
+
+            <p>
+                Workshop Management Platform
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             LOGIN CARD
+        ================================================== -->
+
+        <div class="login-card">
+
+            <h2>
+                Staff Login
+            </h2>
+
+            <p class="login-description">
+                Sign in to manage your workshop.
+            </p>
+
+
+            <!-- =================================================
+                 MESSAGES
+            ================================================== -->
+
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="login-error">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 LOGIN FORM
+            ================================================== -->
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- USERNAME -->
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your username"
+                        required
+                        autocomplete="username"
+                    >
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+                        autocomplete="current-password"
+                    >
+
+                </div>
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button
+                    type="submit"
+                    class="login-btn"
+                >
+                    Sign In
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             CUSTOMER TRACKING
+        ================================================== -->
+
+        <div class="login-footer">
+
+            <p>
+                Are you a customer?
+                <a href="{% url 'customer_tracking' %}">
+                    Track your repair
+                </a>
+            </p>
+
+            <p>
+                AutoTrack by EdVance Tech
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+</body>
+
+</html>

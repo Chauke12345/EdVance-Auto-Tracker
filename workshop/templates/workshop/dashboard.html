@@ -1,0 +1,781 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AutoTrack | Workshop Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'workshop/css/style.css' %}"
+    >
+
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="main-header">
+
+        <div class="container header-inner">
+
+            <div>
+
+                <div class="brand">
+                    AutoTrack
+                </div>
+
+                <div class="header-user">
+                    {{ workshop.name }}
+                </div>
+
+            </div>
+
+
+            <div class="header-user">
+
+                Welcome,
+                <strong>{{ request.user.username }}</strong>
+
+                —
+
+                {{ staff_profile.get_role_display }}
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="container">
+
+
+        <!-- =================================================
+             MESSAGES
+        ================================================== -->
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="message">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+        <!-- =================================================
+             DASHBOARD TOP
+        ================================================== -->
+
+        <section class="dashboard-top">
+
+            <div>
+
+                <h1>Workshop Dashboard</h1>
+
+                <p>
+                    Manage today's vehicles and repair jobs.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'create_repair_job' %}"
+                class="btn btn-success"
+            >
+                + New Repair Job
+            </a>
+
+        </section>
+
+
+        <!-- =================================================
+             QUICK ACTIONS
+        ================================================== -->
+
+        <section class="quick-actions">
+
+
+            <!-- CUSTOMER -->
+
+            <a
+                href="{% url 'register_customer' %}"
+                class="quick-action-card"
+            >
+
+                <strong>
+                    + Customer
+                </strong>
+
+                <span>
+                    Register new customer
+                </span>
+
+            </a>
+
+
+            <!-- VEHICLE -->
+
+            <a
+                href="{% url 'register_vehicle' %}"
+                class="quick-action-card"
+            >
+
+                <strong>
+                    + Vehicle
+                </strong>
+
+                <span>
+                    Register customer vehicle
+                </span>
+
+            </a>
+
+
+            <!-- REPAIR JOB -->
+
+            <a
+                href="{% url 'create_repair_job' %}"
+                class="quick-action-card"
+            >
+
+                <strong>
+                    + Repair Job
+                </strong>
+
+                <span>
+                    Check vehicle into workshop
+                </span>
+
+            </a>
+
+
+        </section>
+
+
+        <!-- =================================================
+             WORKSHOP OVERVIEW
+        ================================================== -->
+
+        <section class="dashboard-grid">
+
+
+            <!-- ACTIVE JOBS -->
+
+            <div class="stat-card">
+
+                <div class="info-label">
+                    Active Jobs
+                </div>
+
+                <div class="stat-number">
+                    {{ active_job_count }}
+                </div>
+
+                <small>
+                    Vehicles currently in workflow
+                </small>
+
+            </div>
+
+
+            <!-- CUSTOMERS -->
+
+            <div class="stat-card">
+
+                <div class="info-label">
+                    Customers
+                </div>
+
+                <div class="stat-number">
+                    {{ customer_count }}
+                </div>
+
+                <small>
+                    Registered customers
+                </small>
+
+            </div>
+
+
+            <!-- VEHICLES -->
+
+            <div class="stat-card">
+
+                <div class="info-label">
+                    Vehicles
+                </div>
+
+                <div class="stat-number">
+                    {{ vehicle_count }}
+                </div>
+
+                <small>
+                    Registered vehicles
+                </small>
+
+            </div>
+
+
+            <!-- COMPLETED JOBS -->
+
+            <div class="stat-card">
+
+                <div class="info-label">
+                    Completed Jobs
+                </div>
+
+                <div class="stat-number">
+                    {{ completed_job_count }}
+                </div>
+
+                <small>
+                    Vehicles collected
+                </small>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             ACTIVE WORKSHOP JOBS
+        ================================================== -->
+
+        <section class="workshop-board">
+
+
+            <!-- ACTIVE JOBS HEADER -->
+
+            <div class="job-section-header">
+
+                <div>
+
+                    <h2>
+                        Active Workshop Jobs
+                    </h2>
+
+                    <p>
+                        Vehicles currently being handled.
+                    </p>
+
+                </div>
+
+
+                <span class="job-count-badge">
+
+                    {{ active_job_count }}
+                    Active
+
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                 STATUS FILTERS
+            ================================================== -->
+
+            <div class="job-filters">
+
+
+                <!-- ALL ACTIVE -->
+
+                <a
+                    href="{% url 'dashboard' %}"
+                    class="filter-btn {% if status_filter == 'all' %}active{% endif %}"
+                >
+                    All Active
+                </a>
+
+
+                <!-- CHECKED IN -->
+
+                <a
+                    href="?status=check_in"
+                    class="filter-btn {% if status_filter == 'check_in' %}active{% endif %}"
+                >
+                    Checked In
+                </a>
+
+
+                <!-- ASSESSMENT -->
+
+                <a
+                    href="?status=assessment"
+                    class="filter-btn {% if status_filter == 'assessment' %}active{% endif %}"
+                >
+                    Assessment
+                </a>
+
+
+                <!-- AWAITING APPROVAL -->
+
+                <a
+                    href="?status=awaiting_approval"
+                    class="filter-btn {% if status_filter == 'awaiting_approval' %}active{% endif %}"
+                >
+                    Awaiting Approval
+                </a>
+
+
+                <!-- AWAITING PARTS -->
+
+                <a
+                    href="?status=awaiting_parts"
+                    class="filter-btn {% if status_filter == 'awaiting_parts' %}active{% endif %}"
+                >
+                    Awaiting Parts
+                </a>
+
+
+                <!-- REPAIR -->
+
+                <a
+                    href="?status=repair"
+                    class="filter-btn {% if status_filter == 'repair' %}active{% endif %}"
+                >
+                    Repair
+                </a>
+
+
+                <!-- QUALITY CHECK -->
+
+                <a
+                    href="?status=quality_check"
+                    class="filter-btn {% if status_filter == 'quality_check' %}active{% endif %}"
+                >
+                    Quality Check
+                </a>
+
+
+                <!-- READY -->
+
+                <a
+                    href="?status=ready"
+                    class="filter-btn {% if status_filter == 'ready' %}active{% endif %}"
+                >
+                    Ready
+                </a>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 ACTIVE JOB LIST
+            ================================================== -->
+
+            {% if active_jobs %}
+
+
+                <div class="job-board">
+
+
+                    {% for job in active_jobs %}
+
+
+                        <article class="job-row">
+
+
+                            <!-- =============================
+                                 VEHICLE
+                            ============================== -->
+
+                            <div class="job-main">
+
+                                <div class="job-registration">
+                                    {{ job.vehicle.registration_number }}
+                                </div>
+
+                                <div class="job-vehicle">
+
+                                    {{ job.vehicle.make }}
+                                    {{ job.vehicle.model }}
+
+                                </div>
+
+                                <div class="job-customer">
+                                    {{ job.vehicle.customer.full_name }}
+                                </div>
+
+                            </div>
+
+
+                            <!-- =============================
+                                 STATUS
+                            ============================== -->
+
+                            <div class="job-column">
+
+                                <span class="info-label">
+                                    Status
+                                </span>
+
+                                <span class="status-badge status-{{ job.status }}">
+                                    {{ job.get_status_display }}
+                                </span>
+
+                            </div>
+
+
+                            <!-- =============================
+                                 JOB NUMBER
+                            ============================== -->
+
+                            <div class="job-column">
+
+                                <span class="info-label">
+                                    Job Number
+                                </span>
+
+                                <strong>
+                                    {{ job.tracking_number }}
+                                </strong>
+
+                            </div>
+
+
+                            <!-- =============================
+                                 ASSIGNED TO
+                            ============================== -->
+
+                            <div class="job-column">
+
+                                <span class="info-label">
+                                    Assigned To
+                                </span>
+
+                                <strong>
+
+                                    {% if job.assigned_to %}
+
+                                        {{ job.assigned_to.user.username }}
+
+                                    {% else %}
+
+                                        Not assigned
+
+                                    {% endif %}
+
+                                </strong>
+
+                            </div>
+
+
+                            <!-- =============================
+                                 ESTIMATED COMPLETION
+                            ============================== -->
+
+                            <div class="job-column">
+
+                                <span class="info-label">
+                                    Estimated
+                                </span>
+
+                                <strong>
+
+                                    {% if job.estimated_completion_date %}
+
+                                        {{ job.estimated_completion_date }}
+
+                                    {% else %}
+
+                                        Not set
+
+                                    {% endif %}
+
+                                </strong>
+
+                            </div>
+
+
+                            <!-- =============================
+                                 OPEN JOB
+                            ============================== -->
+
+                            <div class="job-action">
+
+                                <a
+                                    href="{% url 'repair_job_detail' job.tracking_number %}"
+                                    class="btn"
+                                >
+                                    Open Job
+                                </a>
+
+                            </div>
+
+
+                        </article>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            {% else %}
+
+
+                <!-- =================================================
+                     NO JOBS FOR CURRENT FILTER
+                ================================================== -->
+
+                <div class="card empty-workshop">
+
+
+                    {% if status_filter != "all" %}
+
+                        <h3>
+                            No Jobs In This Stage
+                        </h3>
+
+                        <p>
+                            There are currently no active repair
+                            jobs matching this status.
+                        </p>
+
+                        <a
+                            href="{% url 'dashboard' %}"
+                            class="btn btn-secondary"
+                        >
+                            Show All Active Jobs
+                        </a>
+
+
+                    {% else %}
+
+                        <h3>
+                            No Active Repair Jobs
+                        </h3>
+
+                        <p>
+                            There are currently no vehicles being
+                            processed by the workshop.
+                        </p>
+
+                        <a
+                            href="{% url 'create_repair_job' %}"
+                            class="btn btn-success"
+                        >
+                            + Create Repair Job
+                        </a>
+
+                    {% endif %}
+
+
+                </div>
+
+
+            {% endif %}
+
+
+        </section>
+
+
+        <!-- =================================================
+             COMPLETED / COLLECTED JOBS
+        ================================================== -->
+
+        <section class="card completed-section">
+
+
+            <div class="completed-heading">
+
+                <div>
+
+                    <h2>
+                        Completed / Collected
+                    </h2>
+
+                    <p>
+                        Finished jobs are kept here so they
+                        don't clutter the active workshop board.
+                    </p>
+
+                </div>
+
+
+                <span class="job-count-badge">
+                    {{ completed_job_count }}
+                </span>
+
+            </div>
+
+
+            {% if completed_jobs %}
+
+
+                <details>
+
+
+                    <summary class="completed-summary">
+
+                        View {{ completed_job_count }}
+                        completed job{{ completed_job_count|pluralize }}
+
+                    </summary>
+
+
+                    <div class="completed-jobs">
+
+
+                        {% for job in completed_jobs %}
+
+
+                            <div class="completed-job-row">
+
+
+                                <!-- VEHICLE -->
+
+                                <div>
+
+                                    <div class="job-registration">
+                                        {{ job.vehicle.registration_number }}
+                                    </div>
+
+                                    <div class="job-vehicle">
+
+                                        {{ job.vehicle.make }}
+                                        {{ job.vehicle.model }}
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- CUSTOMER -->
+
+                                <div>
+
+                                    <span class="info-label">
+                                        Customer
+                                    </span>
+
+                                    <strong>
+                                        {{ job.vehicle.customer.full_name }}
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- JOB NUMBER -->
+
+                                <div>
+
+                                    <span class="info-label">
+                                        Job Number
+                                    </span>
+
+                                    <strong>
+                                        {{ job.tracking_number }}
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- STATUS -->
+
+                                <div>
+
+                                    <span class="status-badge status-collected">
+                                        {{ job.get_status_display }}
+                                    </span>
+
+                                </div>
+
+
+                                <!-- VIEW -->
+
+                                <div>
+
+                                    <a
+                                        href="{% url 'repair_job_detail' job.tracking_number %}"
+                                        class="btn btn-secondary"
+                                    >
+                                        View
+                                    </a>
+
+                                </div>
+
+
+                            </div>
+
+
+                        {% endfor %}
+
+
+                    </div>
+
+
+                </details>
+
+
+            {% else %}
+
+
+                <p>
+                    No completed jobs yet.
+                </p>
+
+
+            {% endif %}
+
+
+        </section>
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <div class="dashboard-footer">
+
+
+            <span>
+                AutoTrack Workshop Management
+            </span>
+
+
+            <a
+                href="{% url 'staff_logout' %}"
+                class="btn btn-secondary"
+            >
+                Logout
+            </a>
+
+
+        </div>
+
+
+    </main>
+
+
+</body>
+
+</html>

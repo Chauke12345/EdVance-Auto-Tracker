@@ -49,13 +49,14 @@
 
             <div class="header-user">
 
-                Logged in as
-                <strong>{{ request.user.username }}</strong>
+    Logged in as
+    <strong>{{ request.user.username }}</strong>
 
-                —
-                {{ staff_profile.get_role_display }}
+    &mdash;
 
-            </div>
+    {{ staff_profile.get_role_display }}
+
+</div>
 
         </div>
 
@@ -240,347 +241,319 @@
 
 <section class="card">
 
-    <div class="card-title">
-        <h2>Customer</h2>
-    </div>
+    <div class="workshop-updates-header">
 
+        <div>
+            <h2>Customer</h2>
 
-    <!-- NAME -->
+            <p>
+                {{ repair_job.vehicle.customer.full_name }}
+            </p>
+        </div>
 
-    <div class="info-item">
-
-        <span class="info-label">
-            Name
-        </span>
-
-        <span class="info-value">
-            {{ repair_job.vehicle.customer.full_name }}
-        </span>
-
-    </div>
-
-
-    <!-- PHONE -->
-
-    <div class="info-item">
-
-        <span class="info-label">
-            Phone
-        </span>
-
-        <span class="info-value">
-            {{ repair_job.vehicle.customer.phone_number }}
-        </span>
+        <button
+            type="button"
+            class="workshop-toggle-btn"
+            id="customer-toggle"
+            onclick="toggleCustomerDetails()"
+            aria-expanded="false"
+            aria-controls="customer-details"
+        >
+            View Customer
+        </button>
 
     </div>
 
 
-    <!-- =========================================
-         WHATSAPP CUSTOMER
-    ========================================== -->
+    <div
+        id="customer-details"
+        style="display: none; margin-top: 20px;"
+    >
 
-    {% if repair_job.vehicle.customer.phone_number %}
+        <!-- PHONE -->
 
-        <div style="margin-top: 15px; margin-bottom: 15px;">
+        <div class="info-item">
 
-            <button
-                type="button"
-                onclick="sendWhatsAppUpdate()"
-                style="
-                    background: #25D366;
-                    color: white;
-                    border: none;
-                    padding: 12px 20px;
-                    border-radius: 6px;
-                    font-weight: 600;
-                    cursor: pointer;
-                "
-            >
-                WhatsApp Customer
-            </button>
+            <span class="info-label">
+                Phone
+            </span>
+
+            <span class="info-value">
+                {{ repair_job.vehicle.customer.phone_number }}
+            </span>
 
         </div>
 
-        <script>
 
-            function sendWhatsAppUpdate() {
+        <!-- WHATSAPP CUSTOMER -->
 
-                let phone =
-                    "{{ repair_job.vehicle.customer.phone_number|escapejs }}"
-                    .replace(/\D/g, "");
+        {% if repair_job.vehicle.customer.phone_number %}
 
-                // Convert SA number: 073... -> 2773...
-                if (phone.startsWith("0")) {
-                    phone = "27" + phone.substring(1);
+            <div style="margin-top: 15px; margin-bottom: 15px;">
+
+                <button
+                    type="button"
+                    onclick="sendWhatsAppUpdate()"
+                    style="
+                        background: #25D366;
+                        color: white;
+                        border: none;
+                        padding: 12px 20px;
+                        border-radius: 6px;
+                        font-weight: 600;
+                        cursor: pointer;
+                    "
+                >
+                    WhatsApp Customer
+                </button>
+
+            </div>
+
+            <script>
+
+                function sendWhatsAppUpdate() {
+
+                    let phone =
+                        "{{ repair_job.vehicle.customer.phone_number|escapejs }}"
+                        .replace(/\D/g, "");
+
+                    if (phone.startsWith("0")) {
+                        phone = "27" + phone.substring(1);
+                    }
+
+                    const trackingUrl =
+                        window.location.origin +
+                        "{% url 'customer_tracking' %}";
+
+                    const message =
+`Hello {{ repair_job.vehicle.customer.full_name|escapejs }},
+
+AutoTrack repair update for your {{ repair_job.vehicle.make|escapejs }} {{ repair_job.vehicle.model|escapejs }} ({{ repair_job.vehicle.registration_number|escapejs }}).
+
+Current Status: {{ repair_job.get_status_display|escapejs }}
+
+Tracking Number: {{ repair_job.tracking_number|escapejs }}
+
+Track your repair here:
+${trackingUrl}
+
+- {{ repair_job.workshop.name|escapejs }}`;
+
+                    window.open(
+                        "https://wa.me/" +
+                        phone +
+                        "?text=" +
+                        encodeURIComponent(message),
+                        "_blank"
+                    );
+
                 }
 
-                const trackingUrl =
-                    window.location.origin +
-                    "{% url 'customer_tracking' %}";
+            </script>
 
-                let message;
-
-                const currentStatus =
-                    "{{ repair_job.status|escapejs }}";
-
-                const customerName =
-                    "{{ repair_job.vehicle.customer.full_name|escapejs }}";
-
-                const vehicle =
-                    "{{ repair_job.vehicle.make|escapejs }} {{ repair_job.vehicle.model|escapejs }}";
-
-                const workshop =
-                    "{{ repair_job.workshop.name|escapejs }}";
-
-                const trackingNumber =
-                    "{{ repair_job.tracking_number|escapejs }}";
-
-                const statusDisplay =
-                    "{{ repair_job.get_status_display|escapejs }}";
+        {% endif %}
 
 
-                if (currentStatus === "check_in") {
+        <!-- EMAIL -->
 
-                    message =
-`Hi ${customerName}
+        <div class="info-item">
 
-Your ${vehicle} has been successfully checked in at ${workshop}.
+            <span class="info-label">
+                Email
+            </span>
 
-Tracking Number: ${trackingNumber}
+            <span class="info-value">
 
-You can track the progress of your vehicle here:
-${trackingUrl}
+                {% if repair_job.vehicle.customer.email %}
 
-Please use your tracking number and registered phone number to view your repair progress.
+                    {{ repair_job.vehicle.customer.email }}
 
-- ${workshop}
-Powered by AutoTrack`;
+                {% else %}
 
-                } else if (currentStatus === "ready") {
+                    Not provided
 
-                    message =
-`Hi ${customerName}
+                {% endif %}
 
-Good news! Your ${vehicle} is ready for collection at ${workshop}.
+            </span>
 
-Tracking Number: ${trackingNumber}
-
-You can view your repair status here:
-${trackingUrl}
-
-Please contact ${workshop} if you need any assistance.
-
-- ${workshop}
-Powered by AutoTrack`;
-
-                } else {
-
-                    message =
-`Hi ${customerName}
-
-Here is an update on your ${vehicle} at ${workshop}.
-
-Current Status: ${statusDisplay}
-
-Tracking Number: ${trackingNumber}
-
-You can track the progress of your vehicle here:
-${trackingUrl}
-
-- ${workshop}
-Powered by AutoTrack`;
-
-                }
-                window.open(
-                    "https://wa.me/" +
-                    phone +
-                    "?text=" +
-                    encodeURIComponent(message),
-                    "_blank"
-                );
-
-            }
-
-        </script>
-
-    {% endif %}
-
-
-    <!-- EMAIL -->
-
-    <div class="info-item">
-
-        <span class="info-label">
-            Email
-        </span>
-
-        <span class="info-value">
-
-            {% if repair_job.vehicle.customer.email %}
-
-                {{ repair_job.vehicle.customer.email }}
-
-            {% else %}
-
-                Not provided
-
-            {% endif %}
-
-        </span>
+        </div>
 
     </div>
 
 </section>
 
+
+<script>
+
+function toggleCustomerDetails() {
+
+    const content =
+        document.getElementById("customer-details");
+
+    const button =
+        document.getElementById("customer-toggle");
+
+    if (content.style.display === "none") {
+
+        content.style.display = "block";
+        button.textContent = "Hide Customer";
+        button.setAttribute("aria-expanded", "true");
+
+    } else {
+
+        content.style.display = "none";
+        button.textContent = "View Customer";
+        button.setAttribute("aria-expanded", "false");
+
+    }
+
+}
+
+</script>
+
+
             <!-- VEHICLE -->
 
-            <section class="card">
-
-                <div class="card-title">
-                    <h2>Vehicle</h2>
-                </div>
-
-
-                <div class="info-grid">
-
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            Registration
-                        </span>
-
-                        <span class="info-value">
-                            {{ repair_job.vehicle.registration_number }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            Make
-                        </span>
-
-                        <span class="info-value">
-                            {{ repair_job.vehicle.make }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            Model
-                        </span>
-
-                        <span class="info-value">
-                            {{ repair_job.vehicle.model }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            Year
-                        </span>
-
-                        <span class="info-value">
-
-                            {% if repair_job.vehicle.year %}
-
-                                {{ repair_job.vehicle.year }}
-
-                            {% else %}
-
-                                Not provided
-
-                            {% endif %}
-
-                        </span>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            Colour
-                        </span>
-
-                        <span class="info-value">
-
-                            {% if repair_job.vehicle.colour %}
-
-                                {{ repair_job.vehicle.colour }}
-
-                            {% else %}
-
-                                Not provided
-
-                            {% endif %}
-
-                        </span>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            Mileage
-                        </span>
-
-                        <span class="info-value">
-
-                            {% if repair_job.mileage %}
-
-                                {{ repair_job.mileage }} km
-
-                            {% else %}
-
-                                Not provided
-
-                            {% endif %}
-
-                        </span>
-
-                    </div>
-
-
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            VIN Number
-                        </span>
-
-                        <span class="info-value">
-
-                            {% if repair_job.vehicle.vin_number %}
-
-                                {{ repair_job.vehicle.vin_number }}
-
-                            {% else %}
-
-                                Not provided
-
-                            {% endif %}
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </section>
-
+<section class="card">
+
+    <div class="workshop-updates-header">
+
+        <div>
+            <h2>Vehicle</h2>
+
+            <p>
+                {{ repair_job.vehicle.make|title }}
+                {{ repair_job.vehicle.model|title }}
+                &mdash;
+                {{ repair_job.vehicle.registration_number|upper }}
+            </p>
+        </div>
+
+        <button
+            type="button"
+            class="workshop-toggle-btn"
+            id="vehicle-toggle"
+            onclick="toggleVehicleDetails()"
+            aria-expanded="false"
+            aria-controls="vehicle-details"
+        >
+            View Vehicle Details
+        </button>
+
+    </div>
+
+
+    <div
+        id="vehicle-details"
+        style="display: none; margin-top: 20px;"
+    >
+
+        <div class="info-item">
+            <span class="info-label">Registration</span>
+            <span class="info-value">
+                {{ repair_job.vehicle.registration_number|upper }}
+            </span>
         </div>
 
 
-        <!-- =================================================
+        <div class="info-item">
+            <span class="info-label">Make</span>
+            <span class="info-value">
+                {{ repair_job.vehicle.make|title }}
+            </span>
+        </div>
+
+
+        <div class="info-item">
+            <span class="info-label">Model</span>
+            <span class="info-value">
+                {{ repair_job.vehicle.model|title }}
+            </span>
+        </div>
+
+
+        <div class="info-item">
+            <span class="info-label">Year</span>
+            <span class="info-value">
+                {% if repair_job.vehicle.year %}
+                    {{ repair_job.vehicle.year }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </span>
+        </div>
+
+
+        <div class="info-item">
+            <span class="info-label">Colour</span>
+            <span class="info-value">
+                {% if repair_job.vehicle.colour %}
+                    {{ repair_job.vehicle.colour|title }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </span>
+        </div>
+
+
+        <div class="info-item">
+            <span class="info-label">Mileage</span>
+            <span class="info-value">
+                {% if repair_job.mileage %}
+                    {{ repair_job.mileage }} km
+                {% else %}
+                    Not provided
+                {% endif %}
+            </span>
+        </div>
+
+
+        <div class="info-item">
+            <span class="info-label">VIN Number</span>
+            <span class="info-value">
+                {% if repair_job.vehicle.vin_number %}
+                    {{ repair_job.vehicle.vin_number }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </span>
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+function toggleVehicleDetails() {
+
+    const content =
+        document.getElementById("vehicle-details");
+
+    const button =
+        document.getElementById("vehicle-toggle");
+
+    if (content.style.display === "none") {
+
+        content.style.display = "block";
+        button.textContent = "Hide Vehicle Details";
+        button.setAttribute("aria-expanded", "true");
+
+    } else {
+
+        content.style.display = "none";
+        button.textContent = "View Vehicle Details";
+        button.setAttribute("aria-expanded", "false");
+
+    }
+
+}
+
+</script>
+
+
+            <!-- =================================================
              REPAIR INFORMATION
         ================================================== -->
 
@@ -602,23 +575,7 @@ Powered by AutoTrack`;
             </p>
 
 
-            <p>
-
-                <strong>
-                    Assigned To:
-                </strong>
-
-                {% if repair_job.assigned_to %}
-
-                    {{ repair_job.assigned_to.user.username }}
-
-                {% else %}
-
-                    Not assigned
-
-                {% endif %}
-
-            </p>
+            
 
         </section>
 
@@ -763,7 +720,7 @@ Powered by AutoTrack`;
 
                             {% endif %}
 
-                            —
+                            &mdash;
 
                             {{ note.created_at }}
 
@@ -1027,57 +984,106 @@ function toggleWorkshopUpdates() {
 
         <section class="card">
 
-            <div class="card-title">
-                <h2>Job Status History</h2>
+            <div class="workshop-updates-header">
+
+                <div>
+                    <h2>Job Status History</h2>
+
+                    <p>
+                        View previous status changes for this repair job.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="workshop-toggle-btn"
+                    id="history-toggle"
+                    onclick="toggleStatusHistory()"
+                    aria-expanded="false"
+                    aria-controls="status-history-content"
+                >
+                    View Status History
+                </button>
+
             </div>
 
 
-            {% if status_history %}
+            <div
+                id="status-history-content"
+                style="display: none; margin-top: 20px;"
+            >
 
-                <div class="timeline">
+                {% if status_history %}
 
-                    {% for history in status_history %}
+                    <div class="timeline">
 
-                        <div class="timeline-item">
+                        {% for history in status_history %}
 
-                            <div class="timeline-status">
-                                {{ history.get_status_display }}
+                            <div class="timeline-item">
+
+                                <div class="timeline-status">
+                                    {{ history.get_status_display }}
+                                </div>
+
+                                <div class="timeline-date">
+
+                                    {{ history.changed_at }}
+
+                                    {% if history.changed_by %}
+
+                                        &mdash;
+                                        {{ history.changed_by.username }}
+
+                                    {% endif %}
+
+                                </div>
+
                             </div>
 
+                        {% endfor %}
 
-                            <div class="timeline-date">
+                    </div>
 
-                                {{ history.changed_at }}
+                {% else %}
 
-                                {% if history.changed_by %}
+                    <p class="muted">
+                        No status history available.
+                    </p>
 
-                                    —
-                                    {{ history.changed_by.user.username }}
+                {% endif %}
 
-                                {% else %}
-
-                                    — System
-
-                                {% endif %}
-
-                            </div>
-
-                        </div>
-
-                    {% endfor %}
-
-                </div>
-
-
-            {% else %}
-
-                <p>
-                    No status changes have been recorded yet.
-                </p>
-
-            {% endif %}
+            </div>
 
         </section>
+
+
+        <script>
+
+        function toggleStatusHistory() {
+
+            const content =
+                document.getElementById("status-history-content");
+
+            const button =
+                document.getElementById("history-toggle");
+
+            if (content.style.display === "none") {
+
+                content.style.display = "block";
+                button.textContent = "Hide Status History";
+                button.setAttribute("aria-expanded", "true");
+
+            } else {
+
+                content.style.display = "none";
+                button.textContent = "View Status History";
+                button.setAttribute("aria-expanded", "false");
+
+            }
+
+        }
+
+        </script>
 
 
         <!-- =================================================
@@ -1087,11 +1093,11 @@ function toggleWorkshopUpdates() {
         <section class="card">
 
             <a
-                href="{% url 'dashboard' %}"
-                class="btn btn-secondary"
-            >
-                ← Back to Dashboard
-            </a>
+    href="{% url 'dashboard' %}"
+    class="btn btn-secondary"
+>
+    &larr; Back to Dashboard
+</a>
 
             <a
                 href="{% url 'staff_logout' %}"

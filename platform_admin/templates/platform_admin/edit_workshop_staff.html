@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Staff | AutoTrack Connect</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #6b7280;
+            margin-top: 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 20px 0;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+        }
+
+        .workshop-name {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        .error {
+            color: #b91c1c;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+        .save-btn {
+            border: none;
+            background: #111827;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 14px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <h1>AutoTrack Connect</h1>
+            <p>EDVANCE TECH Platform Administration</p>
+        </div>
+
+        <a
+            href="{% url 'platform_admin:workshop_staff_detail' workshop.id staff_member.id %}"
+            class="back-link"
+        >
+            &larr; Back to Staff Management
+        </a>
+
+        <div class="card">
+
+            <h2>Edit Staff Details</h2>
+
+            <p class="workshop-name">
+                Workshop: <strong>{{ workshop.name }}</strong>
+            </p>
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                {% for field in form %}
+
+                    <div class="form-group">
+
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% for error in field.errors %}
+                            <div class="error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                {% endfor %}
+
+                <button
+                    type="submit"
+                    class="save-btn"
+                >
+                    Save Staff Changes
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Staff | AutoTrack Connect</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #6b7280;
+            margin-top: 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 20px 0;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            padding: 26px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        .card h2,
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .status-active {
+            display: inline-block;
+            background: #dcfce7;
+            color: #166534;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .status-inactive {
+            display: inline-block;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .detail-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 12px;
+        }
+
+        .detail-label {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-weight: bold;
+        }
+
+        .management-note {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 650px) {
+            .container {
+                padding: 20px 14px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    
+        .staff-status-form {
+            margin-top: 20px;
+        }
+
+        .status-btn {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .deactivate-btn {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .activate-btn {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-btn:hover {
+            opacity: 0.85;
+        }
+
+</style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <h1>AutoTrack Connect</h1>
+            <p>EDVANCE TECH Platform Administration</p>
+        </div>
+
+        <a
+            href="{% url 'platform_admin:workshop_detail' workshop.id %}"
+            class="back-link"
+        >
+            &larr; Back to Workshop Management
+        </a>
+
+        <div class="card">
+
+            <h2>Manage Staff Account</h2>
+
+            <p>
+                Workshop:
+                <strong>{{ workshop.name }}</strong>
+            </p>
+
+            {% if staff_member.is_active %}
+                <span class="status-active">
+                    Active
+                </span>
+            {% else %}
+                <span class="status-inactive">
+                    Inactive
+                </span>
+            {% endif %}
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Staff Information</h3>
+
+            <div class="details-grid">
+
+                <div class="detail-item">
+                    <div class="detail-label">
+                        Username
+                    </div>
+
+                    <div class="detail-value">
+                        {{ staff_member.user.username }}
+                    </div>
+                </div>
+
+
+                <div class="detail-item">
+                    <div class="detail-label">
+                        Full Name
+                    </div>
+
+                    <div class="detail-value">
+                        {{ staff_member.user.get_full_name|default:"-" }}
+                    </div>
+                </div>
+
+
+                <div class="detail-item">
+                    <div class="detail-label">
+                        Role
+                    </div>
+
+                    <div class="detail-value">
+                        {{ staff_member.get_role_display }}
+                    </div>
+                </div>
+
+
+                <div class="detail-item">
+                    <div class="detail-label">
+                        Email
+                    </div>
+
+                    <div class="detail-value">
+                        {{ staff_member.user.email|default:"-" }}
+                    </div>
+                </div>
+
+
+                <div class="detail-item">
+                    <div class="detail-label">
+                        Workshop
+                    </div>
+
+                    <div class="detail-value">
+                        {{ workshop.name }}
+                    </div>
+                </div>
+
+
+                <div class="detail-item">
+                    <div class="detail-label">
+                        Account Status
+                    </div>
+
+                    <div class="detail-value">
+                        {% if staff_member.is_active %}
+                            Active
+                        {% else %}
+                            Inactive
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Account Management</h3>
+
+            <p class="management-note">
+                Manage this staff member's details, role, password and workshop access.
+            </p>
+
+            <a
+                href="{% url 'platform_admin:edit_workshop_staff' workshop.id staff_member.id %}"
+                class="status-btn"
+                style="display: inline-block; text-decoration: none; margin-bottom: 15px;"
+            >
+                Edit Staff Details
+            </a>
+
+            <a
+                href="{% url 'platform_admin:reset_workshop_staff_password' workshop.id staff_member.id %}"
+                class="status-btn"
+                style="display: inline-block; text-decoration: none; margin-bottom: 15px; margin-left: 8px;"
+            >
+                Reset Staff Password
+            </a>
+
+            <form
+                method="post"
+                action="{% url 'platform_admin:toggle_staff_status' workshop.id staff_member.id %}"
+                class="staff-status-form"
+                onsubmit="return confirm('Are you sure you want to change this staff account status?');"
+            >
+                {% csrf_token %}
+
+                {% if staff_member.is_active %}
+
+                    <button
+                        type="submit"
+                        class="status-btn deactivate-btn"
+                    >
+                        Deactivate Staff Account
+                    </button>
+
+                {% else %}
+
+                    <button
+                        type="submit"
+                        class="status-btn activate-btn"
+                    >
+                        Activate Staff Account
+                    </button>
+
+                {% endif %}
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+</body>
+</html>

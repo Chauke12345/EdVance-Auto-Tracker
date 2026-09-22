@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ workshop.name }} | AutoTrack Connect</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        .topbar {
+            background: #111827;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .topbar-inner {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .brand p {
+            margin: 5px 0 0;
+            color: #d1d5db;
+            font-size: 14px;
+        }
+
+        .admin-user {
+            font-size: 14px;
+            color: #e5e7eb;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px 40px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #374151;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .workshop-header {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .workshop-header h2 {
+            margin: 0 0 6px;
+            font-size: 28px;
+        }
+
+        .workshop-header p {
+            margin: 0;
+            color: #6b7280;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card .label {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .number {
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .section h3 {
+            margin: 0 0 20px;
+            font-size: 20px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .detail-item {
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .detail-label {
+            display: block;
+            color: #6b7280;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .detail-value {
+            font-weight: bold;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        th {
+            background: #f9fafb;
+            color: #4b5563;
+            font-size: 13px;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        .empty {
+            color: #6b7280;
+            text-align: center;
+            padding: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .topbar-inner,
+            .workshop-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                margin-top: 20px;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+        }
+    
+        .workshop-status-form {
+            margin-top: 18px;
+        }
+
+        .workshop-status-btn {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .deactivate-btn {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .activate-btn {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .workshop-status-btn:hover {
+            opacity: 0.85;
+        }
+
+    
+        .add-workshop-staff-btn {
+            display: inline-block;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+            padding: 11px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .add-workshop-staff-btn:hover {
+            opacity: 0.9;
+        }
+
+</style>
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="topbar-inner">
+
+            <div class="brand">
+                <h1>AutoTrack Connect</h1>
+                <p>EDVANCE TECH Platform Administration</p>
+            </div>
+
+            <div class="admin-user">
+                Platform Admin:
+                <strong>{{ request.user.username }}</strong>
+            </div>
+
+        </div>
+    </header>
+
+
+    <main class="container">
+
+        <a
+            href="{% url 'platform_admin:dashboard' %}"
+            class="back-link"
+        >
+            &larr; Back to Platform Dashboard
+        </a>
+
+
+        <section class="workshop-header">
+
+            <div>
+                <h2>{{ workshop.name }}</h2>
+                <p>Workshop Management</p>
+            </div>
+
+            <div>
+                {% if workshop.is_active %}
+                    <span class="status status-active">
+                        Active
+                    </span>
+                {% else %}
+                    <span class="status status-inactive">
+                        Inactive
+                    </span>
+                {% endif %}
+            </div>
+
+        </section>
+
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="label">Customers</div>
+                <div class="number">{{ customer_count }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="label">Vehicles</div>
+                <div class="number">{{ vehicle_count }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="label">Total Repair Jobs</div>
+                <div class="number">{{ total_jobs }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="label">Active Jobs</div>
+                <div class="number">{{ active_jobs }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="label">Completed Jobs</div>
+                <div class="number">{{ completed_jobs }}</div>
+            </div>
+
+        </section>
+
+
+        <section class="section">
+
+            <h3>Workshop Information</h3>
+
+            <div class="details-grid">
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        Workshop Name
+                    </span>
+
+                    <span class="detail-value">
+                        {{ workshop.name }}
+                    </span>
+                </div>
+
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        Workshop Type
+                    </span>
+
+                    <span class="detail-value">
+                        {{ workshop.get_workshop_type_display }}
+                    </span>
+                </div>
+
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        Location
+                    </span>
+
+                    <span class="detail-value">
+                        {{ workshop.location|default:"—" }}
+                    </span>
+                </div>
+
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        Phone Number
+                    </span>
+
+                    <span class="detail-value">
+                        {{ workshop.phone_number|default:"—" }}
+                    </span>
+                </div>
+
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        Email
+                    </span>
+
+                    <span class="detail-value">
+                        {{ workshop.email|default:"—" }}
+                    </span>
+                </div>
+
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        Address
+                    </span>
+
+                    <span class="detail-value">
+                        {{ workshop.address|default:"—" }}
+                    </span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="section">
+
+            <h3>Platform Status</h3>
+
+            <div class="details-grid">
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        Workshop Status
+                    </span>
+
+                    <span class="detail-value">
+                        {% if workshop.is_active %}
+                            Active
+                        {% else %}
+                            Inactive
+                        {% endif %}
+                    </span>
+                </div>
+
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        Connected Since
+                    </span>
+
+                    <span class="detail-value">
+                        {{ workshop.created_at|date:"d M Y" }}
+                    </span>
+                </div>
+
+
+                <div class="detail-item">
+                    <span class="detail-label">
+                        Staff Accounts
+                    </span>
+
+                    <span class="detail-value">
+                        {{ staff_members|length }}
+                    </span>
+                </div>
+
+            </div>
+
+
+            <form
+                method="post"
+                action="{% url 'platform_admin:toggle_workshop_status' workshop.id %}"
+                class="workshop-status-form"
+                onsubmit="return confirm('Are you sure you want to change this workshop status?');"
+            >
+                {% csrf_token %}
+
+                {% if workshop.is_active %}
+
+                    <button
+                        type="submit"
+                        class="workshop-status-btn deactivate-btn"
+                    >
+                        Deactivate Workshop
+                    </button>
+
+                {% else %}
+
+                    <button
+                        type="submit"
+                        class="workshop-status-btn activate-btn"
+                    >
+                        Activate Workshop
+                    </button>
+
+                {% endif %}
+
+            </form>
+
+        </section>
+
+
+        <section class="section">
+
+            <h3>Owner &amp; Staff Accounts</h3>
+
+            <div style="margin-bottom: 18px;">
+                <a
+                    href="{% url 'platform_admin:add_workshop_staff' workshop.id %}"
+                    class="add-workshop-staff-btn"
+                >
+                    + Add Staff Account
+                </a>
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Full Name</th>
+                            <th>Role</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for staff in staff_members %}
+
+                            <tr>
+
+                                <td>
+                                    {{ staff.user.username }}
+                                </td>
+
+                                <td>
+                                    {{ staff.user.get_full_name|default:"—" }}
+                                </td>
+
+                                <td>
+                                    {{ staff.get_role_display }}
+                                </td>
+
+                                <td>
+                                    {{ staff.user.email|default:"—" }}
+                                </td>
+
+                                <td>
+                                    {% if staff.is_active %}
+                                        <span class="status status-active">
+                                            Active
+                                        </span>
+                                    {% else %}
+                                        <span class="status status-inactive">
+                                            Inactive
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <a
+                                        href="{% url 'platform_admin:workshop_staff_detail' workshop.id staff.id %}"
+                                        style="
+                                            display: inline-block;
+                                            padding: 8px 14px;
+                                            background: #111827;
+                                            color: white;
+                                            text-decoration: none;
+                                            border-radius: 7px;
+                                            font-weight: bold;
+                                            font-size: 14px;
+                                        "
+                                    >
+                                        Manage
+                                    </a>
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+                                <td colspan="6" class="empty">
+                                    No staff accounts found for this workshop.
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
+
+

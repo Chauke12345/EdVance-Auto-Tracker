@@ -236,72 +236,201 @@
         </section>
 
 
-        <!-- =================================================
-             CUSTOMER + VEHICLE
-        ================================================== -->
+       <!-- CUSTOMER -->
 
-        <div class="info-grid">
+<section class="card">
 
-
-            <!-- CUSTOMER -->
-
-            <section class="card">
-
-                <div class="card-title">
-                    <h2>Customer</h2>
-                </div>
+    <div class="card-title">
+        <h2>Customer</h2>
+    </div>
 
 
-                <div class="info-item">
+    <!-- NAME -->
 
-                    <span class="info-label">
-                        Name
-                    </span>
+    <div class="info-item">
 
-                    <span class="info-value">
-                        {{ repair_job.vehicle.customer.full_name }}
-                    </span>
+        <span class="info-label">
+            Name
+        </span>
 
-                </div>
+        <span class="info-value">
+            {{ repair_job.vehicle.customer.full_name }}
+        </span>
 
-
-                <div class="info-item">
-
-                    <span class="info-label">
-                        Phone
-                    </span>
-
-                    <span class="info-value">
-                        {{ repair_job.vehicle.customer.phone_number }}
-                    </span>
-
-                </div>
+    </div>
 
 
-                <div class="info-item">
+    <!-- PHONE -->
 
-                    <span class="info-label">
-                        Email
-                    </span>
+    <div class="info-item">
 
-                    <span class="info-value">
+        <span class="info-label">
+            Phone
+        </span>
 
-                        {% if repair_job.vehicle.customer.email %}
+        <span class="info-value">
+            {{ repair_job.vehicle.customer.phone_number }}
+        </span>
 
-                            {{ repair_job.vehicle.customer.email }}
+    </div>
 
-                        {% else %}
 
-                            Not provided
+    <!-- =========================================
+         WHATSAPP CUSTOMER
+    ========================================== -->
 
-                        {% endif %}
+    {% if repair_job.vehicle.customer.phone_number %}
 
-                    </span>
+        <div style="margin-top: 15px; margin-bottom: 15px;">
 
-                </div>
+            <button
+                type="button"
+                onclick="sendWhatsAppUpdate()"
+                style="
+                    background: #25D366;
+                    color: white;
+                    border: none;
+                    padding: 12px 20px;
+                    border-radius: 6px;
+                    font-weight: 600;
+                    cursor: pointer;
+                "
+            >
+                WhatsApp Customer
+            </button>
 
-            </section>
+        </div>
 
+        <script>
+
+            function sendWhatsAppUpdate() {
+
+                let phone =
+                    "{{ repair_job.vehicle.customer.phone_number|escapejs }}"
+                    .replace(/\D/g, "");
+
+                // Convert SA number: 073... -> 2773...
+                if (phone.startsWith("0")) {
+                    phone = "27" + phone.substring(1);
+                }
+
+                const trackingUrl =
+                    window.location.origin +
+                    "{% url 'customer_tracking' %}";
+
+                let message;
+
+                const currentStatus =
+                    "{{ repair_job.status|escapejs }}";
+
+                const customerName =
+                    "{{ repair_job.vehicle.customer.full_name|escapejs }}";
+
+                const vehicle =
+                    "{{ repair_job.vehicle.make|escapejs }} {{ repair_job.vehicle.model|escapejs }}";
+
+                const workshop =
+                    "{{ repair_job.workshop.name|escapejs }}";
+
+                const trackingNumber =
+                    "{{ repair_job.tracking_number|escapejs }}";
+
+                const statusDisplay =
+                    "{{ repair_job.get_status_display|escapejs }}";
+
+
+                if (currentStatus === "check_in") {
+
+                    message =
+`Hi ${customerName}
+
+Your ${vehicle} has been successfully checked in at ${workshop}.
+
+Tracking Number: ${trackingNumber}
+
+You can track the progress of your vehicle here:
+${trackingUrl}
+
+Please use your tracking number and registered phone number to view your repair progress.
+
+- ${workshop}
+Powered by AutoTrack`;
+
+                } else if (currentStatus === "ready") {
+
+                    message =
+`Hi ${customerName}
+
+Good news! Your ${vehicle} is ready for collection at ${workshop}.
+
+Tracking Number: ${trackingNumber}
+
+You can view your repair status here:
+${trackingUrl}
+
+Please contact ${workshop} if you need any assistance.
+
+- ${workshop}
+Powered by AutoTrack`;
+
+                } else {
+
+                    message =
+`Hi ${customerName}
+
+Here is an update on your ${vehicle} at ${workshop}.
+
+Current Status: ${statusDisplay}
+
+Tracking Number: ${trackingNumber}
+
+You can track the progress of your vehicle here:
+${trackingUrl}
+
+- ${workshop}
+Powered by AutoTrack`;
+
+                }
+                window.open(
+                    "https://wa.me/" +
+                    phone +
+                    "?text=" +
+                    encodeURIComponent(message),
+                    "_blank"
+                );
+
+            }
+
+        </script>
+
+    {% endif %}
+
+
+    <!-- EMAIL -->
+
+    <div class="info-item">
+
+        <span class="info-label">
+            Email
+        </span>
+
+        <span class="info-value">
+
+            {% if repair_job.vehicle.customer.email %}
+
+                {{ repair_job.vehicle.customer.email }}
+
+            {% else %}
+
+                Not provided
+
+            {% endif %}
+
+        </span>
+
+    </div>
+
+</section>
 
             <!-- VEHICLE -->
 
@@ -493,316 +622,404 @@
 
         </section>
 
+<!-- =================================================
+     WORKSHOP NOTES & JOB PHOTOS - COLLAPSIBLE
+================================================== -->
 
-        <!-- =================================================
-             ADD WORKSHOP NOTE
-        ================================================== -->
+<section class="card workshop-updates-wrapper">
 
-        <section class="card">
+    <div class="workshop-updates-header">
 
-            <div class="card-title">
-                <h2>Add Workshop Note</h2>
-            </div>
+        <div>
+            <h2>Workshop Notes & Job Photos</h2>
 
             <p>
-                Record diagnosis, parts required,
-                repair progress, customer communication,
-                or other workshop updates.
+                Add workshop notes, track repair progress
+                and manage job photos.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            class="workshop-toggle-btn"
+            id="workshop-updates-toggle"
+            onclick="toggleWorkshopUpdates()"
+            aria-expanded="false"
+            aria-controls="workshop-updates-content"
+        >
+            View Updates
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =================================================
+     COLLAPSIBLE CONTENT
+================================================== -->
+
+<div
+    id="workshop-updates-content"
+    class="workshop-updates-content"
+    style="display: none;"
+>
+
+
+    <!-- =================================================
+         ADD WORKSHOP NOTE
+    ================================================== -->
+
+    <section class="card">
+
+        <div class="card-title">
+            <h2>Add Workshop Note</h2>
+        </div>
+
+        <p>
+            Record diagnosis, parts required,
+            repair progress, customer communication,
+            or other workshop updates.
+        </p>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <input
+                type="hidden"
+                name="form_type"
+                value="note"
+            >
+
+
+            <p>
+
+                <label for="{{ note_form.note.id_for_label }}">
+                    Workshop Note
+                </label>
+
+                {{ note_form.note }}
+
             </p>
 
 
-            <form method="POST">
-
-                {% csrf_token %}
-
-                <input
-                    type="hidden"
-                    name="form_type"
-                    value="note"
-                >
-
+            {% if note_form.note.errors %}
 
                 <p>
-
-                    <label for="{{ note_form.note.id_for_label }}">
-                        Workshop Note
-                    </label>
-
-                    {{ note_form.note }}
-
-                </p>
-
-
-                {% if note_form.note.errors %}
-
-                    <p>
-                        {{ note_form.note.errors }}
-                    </p>
-
-                {% endif %}
-
-
-                <button type="submit">
-                    Add Note
-                </button>
-
-            </form>
-
-        </section>
-
-
-        <!-- =================================================
-             WORKSHOP NOTES
-        ================================================== -->
-
-        <section class="card">
-
-            <div class="card-title">
-                <h2>Workshop Notes</h2>
-            </div>
-
-
-            {% if job_notes %}
-
-                {% for note in job_notes %}
-
-                    <div class="info-item">
-
-                        <p>
-                            {{ note.note }}
-                        </p>
-
-
-                        <p>
-
-                            <small>
-
-                                Added by:
-
-                                {% if note.staff %}
-
-                                    <strong>
-                                        {{ note.staff.user.username }}
-                                    </strong>
-
-                                {% else %}
-
-                                    Staff member unavailable
-
-                                {% endif %}
-
-                                —
-
-                                {{ note.created_at }}
-
-                            </small>
-
-                        </p>
-
-                    </div>
-
-
-                    {% if not forloop.last %}
-                        <hr>
-                    {% endif %}
-
-                {% endfor %}
-
-
-            {% else %}
-
-                <p>
-                    No workshop notes have been added yet.
+                    {{ note_form.note.errors }}
                 </p>
 
             {% endif %}
 
-        </section>
+
+            <button type="submit">
+                Add Note
+            </button>
+
+        </form>
+
+    </section>
 
 
-        <!-- =================================================
-             UPLOAD PHOTOS
-        ================================================== -->
+    <!-- =================================================
+         WORKSHOP NOTES
+    ================================================== -->
 
-        <section class="card">
+    <section class="card">
 
-            <div class="card-title">
-                <h2>Upload Job Photos</h2>
-            </div>
-
-
-            <p>
-                Upload check-in photos, vehicle damage,
-                repair progress, or completed repair photos.
-                You can select multiple photos at once.
-            </p>
+        <div class="card-title">
+            <h2>Workshop Notes</h2>
+        </div>
 
 
-            <form
-                method="POST"
-                enctype="multipart/form-data"
-            >
+        {% if job_notes %}
 
-                {% csrf_token %}
+            {% for note in job_notes %}
 
-                <input
-                    type="hidden"
-                    name="form_type"
-                    value="photo"
-                >
-
-
-                <!-- PHOTOS -->
-
-                <p>
-
-                    <label for="{{ photo_form.images.id_for_label }}">
-                        Photos
-                    </label>
-
-                    {{ photo_form.images }}
-
-                    <small>
-                        You can select multiple photos at once.
-                    </small>
-
-                </p>
-
-
-                {% if photo_form.images.errors %}
+                <div class="info-item">
 
                     <p>
-                        {{ photo_form.images.errors }}
+                        {{ note.note }}
                     </p>
 
-                {% endif %}
-
-
-                <!-- PHOTO TYPE -->
-
-                <p>
-
-                    <label for="{{ photo_form.photo_type.id_for_label }}">
-                        Photo Type
-                    </label>
-
-                    {{ photo_form.photo_type }}
-
-                </p>
-
-
-                {% if photo_form.photo_type.errors %}
 
                     <p>
-                        {{ photo_form.photo_type.errors }}
-                    </p>
 
-                {% endif %}
+                        <small>
 
+                            Added by:
 
-                <!-- DESCRIPTION -->
+                            {% if note.staff %}
 
-                <p>
+                                <strong>
+                                    {{ note.staff.user.username }}
+                                </strong>
 
-                    <label for="{{ photo_form.description.id_for_label }}">
-                        Description
-                    </label>
+                            {% else %}
 
-                    {{ photo_form.description }}
-
-                </p>
-
-
-                {% if photo_form.description.errors %}
-
-                    <p>
-                        {{ photo_form.description.errors }}
-                    </p>
-
-                {% endif %}
-
-
-                <button type="submit">
-                    Upload Photos
-                </button>
-
-            </form>
-
-        </section>
-
-
-        <!-- =================================================
-             PHOTO GALLERY
-        ================================================== -->
-
-        <section class="card">
-
-            <div class="card-title">
-                <h2>Job Photos</h2>
-            </div>
-
-
-            {% if job_photos %}
-
-                <div class="photo-grid">
-
-                    {% for photo in job_photos %}
-
-                        <div class="photo-card">
-
-
-                            {% if photo.image %}
-
-                                <img
-                                    src="{{ photo.image.url }}"
-                                    alt="{{ photo.description|default:'Repair job photo' }}"
-                                >
+                                Staff member unavailable
 
                             {% endif %}
 
+                            —
 
-                            <div class="photo-info">
+                            {{ note.created_at }}
 
-                                <p>
-                                    <strong>
-                                        {{ photo.get_photo_type_display }}
-                                    </strong>
-                                </p>
+                        </small>
 
-
-                                {% if photo.description %}
-
-                                    <p>
-                                        {{ photo.description }}
-                                    </p>
-
-                                {% endif %}
-
-
-                                <small>
-                                    Uploaded:
-                                    {{ photo.uploaded_at }}
-                                </small>
-
-                            </div>
-
-                        </div>
-
-                    {% endfor %}
+                    </p>
 
                 </div>
 
 
-            {% else %}
+                {% if not forloop.last %}
+                    <hr>
+                {% endif %}
+
+            {% endfor %}
+
+
+        {% else %}
+
+            <p>
+                No workshop notes have been added yet.
+            </p>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =================================================
+         UPLOAD PHOTOS
+    ================================================== -->
+
+    <section class="card">
+
+        <div class="card-title">
+            <h2>Upload Job Photos</h2>
+        </div>
+
+
+        <p>
+            Upload check-in photos, vehicle damage,
+            repair progress, or completed repair photos.
+            You can select multiple photos at once.
+        </p>
+
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+            <input
+                type="hidden"
+                name="form_type"
+                value="photo"
+            >
+
+
+            <!-- PHOTOS -->
+
+            <p>
+
+                <label for="{{ photo_form.images.id_for_label }}">
+                    Photos
+                </label>
+
+                {{ photo_form.images }}
+
+                <small>
+                    You can select multiple photos at once.
+                </small>
+
+            </p>
+
+
+            {% if photo_form.images.errors %}
 
                 <p>
-                    No job photos have been uploaded yet.
+                    {{ photo_form.images.errors }}
                 </p>
 
             {% endif %}
 
-        </section>
 
+            <!-- PHOTO TYPE -->
+
+            <p>
+
+                <label for="{{ photo_form.photo_type.id_for_label }}">
+                    Photo Type
+                </label>
+
+                {{ photo_form.photo_type }}
+
+            </p>
+
+
+            {% if photo_form.photo_type.errors %}
+
+                <p>
+                    {{ photo_form.photo_type.errors }}
+                </p>
+
+            {% endif %}
+
+
+            <!-- DESCRIPTION -->
+
+            <p>
+
+                <label for="{{ photo_form.description.id_for_label }}">
+                    Description
+                </label>
+
+                {{ photo_form.description }}
+
+            </p>
+
+
+            {% if photo_form.description.errors %}
+
+                <p>
+                    {{ photo_form.description.errors }}
+                </p>
+
+            {% endif %}
+
+
+            <button type="submit">
+                Upload Photos
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- =================================================
+         PHOTO GALLERY
+    ================================================== -->
+
+    <section class="card">
+
+        <div class="card-title">
+            <h2>Job Photos</h2>
+        </div>
+
+
+        {% if job_photos %}
+
+            <div class="photo-grid">
+
+                {% for photo in job_photos %}
+
+                    <div class="photo-card">
+
+
+                        {% if photo.image %}
+
+                            <img
+                                src="{{ photo.image.url }}"
+                                alt="{{ photo.description|default:'Repair job photo' }}"
+                            >
+
+                        {% endif %}
+
+
+                        <div class="photo-info">
+
+                            <p>
+                                <strong>
+                                    {{ photo.get_photo_type_display }}
+                                </strong>
+                            </p>
+
+
+                            {% if photo.description %}
+
+                                <p>
+                                    {{ photo.description }}
+                                </p>
+
+                            {% endif %}
+
+
+                            <small>
+                                Uploaded:
+                                {{ photo.uploaded_at }}
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+            <p>
+                No job photos have been uploaded yet.
+            </p>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+
+<!-- =================================================
+     WORKSHOP UPDATES COLLAPSE SCRIPT
+================================================== -->
+
+<script>
+
+function toggleWorkshopUpdates() {
+
+    const content =
+        document.getElementById("workshop-updates-content");
+
+    const button =
+        document.getElementById("workshop-updates-toggle");
+
+
+    if (content.style.display === "none") {
+
+        content.style.display = "block";
+
+        button.textContent = "Hide Updates";
+
+        button.setAttribute(
+            "aria-expanded",
+            "true"
+        );
+
+    } else {
+
+        content.style.display = "none";
+
+        button.textContent = "View Updates";
+
+        button.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+    }
+
+}
+
+</script>
 
         <!-- =================================================
              JOB STATUS HISTORY

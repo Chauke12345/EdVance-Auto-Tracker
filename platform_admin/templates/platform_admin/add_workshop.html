@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Workshop | AutoTrack Connect</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+        .topbar {
+            background: #111827;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .topbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .topbar p {
+            margin: 5px 0 0;
+            color: #d1d5db;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #374151;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .form-card h2 {
+            margin-top: 0;
+        }
+
+        .description {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #111827;
+        }
+
+        .errorlist {
+            color: #b91c1c;
+            margin: 6px 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            font-size: 15px;
+        }
+
+        .btn-primary {
+            background: #111827;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        @media (max-width: 650px) {
+            .container {
+                padding: 18px;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="topbar">
+        <h1>AutoTrack Connect</h1>
+        <p>EDVANCE TECH Platform Administration</p>
+    </header>
+
+    <main class="container">
+
+        <a
+            href="{% url 'platform_admin:dashboard' %}"
+            class="back-link"
+        >
+            ? Back to Platform Dashboard
+        </a>
+
+        <div class="form-card">
+
+            <h2>Add Workshop</h2>
+
+            <p class="description">
+                Register a new workshop tenant and create its owner account.
+            </p>
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                {{ form.non_field_errors }}
+
+                <h3 class="section-title">
+                    Workshop Details
+                </h3>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        {{ form.workshop_name.label_tag }}
+                        {{ form.workshop_name }}
+                        {{ form.workshop_name.errors }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.workshop_type.label_tag }}
+                        {{ form.workshop_type }}
+                        {{ form.workshop_type.errors }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.phone_number.label_tag }}
+                        {{ form.phone_number }}
+                        {{ form.phone_number.errors }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.email.label_tag }}
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.location.label_tag }}
+                        {{ form.location }}
+                        {{ form.location.errors }}
+                    </div>
+
+                    <div class="form-group full-width">
+                        {{ form.address.label_tag }}
+                        {{ form.address }}
+                        {{ form.address.errors }}
+                    </div>
+
+                </div>
+
+
+                <h3 class="section-title">
+                    Workshop Owner Account
+                </h3>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        {{ form.owner_first_name.label_tag }}
+                        {{ form.owner_first_name }}
+                        {{ form.owner_first_name.errors }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.owner_last_name.label_tag }}
+                        {{ form.owner_last_name }}
+                        {{ form.owner_last_name.errors }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.owner_username.label_tag }}
+                        {{ form.owner_username }}
+                        {{ form.owner_username.errors }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.owner_email.label_tag }}
+                        {{ form.owner_email }}
+                        {{ form.owner_email.errors }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.temporary_password.label_tag }}
+                        {{ form.temporary_password }}
+                        {{ form.temporary_password.errors }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.confirm_password.label_tag }}
+                        {{ form.confirm_password }}
+                        {{ form.confirm_password.errors }}
+                    </div>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Create Workshop
+                    </button>
+
+                    <a
+                        href="{% url 'platform_admin:dashboard' %}"
+                        class="btn btn-secondary"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

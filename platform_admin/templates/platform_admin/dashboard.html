@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AutoTrack Connect | EDVANCE TECH Platform</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+        .topbar {
+            background: #111827;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .topbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .topbar p {
+            margin: 5px 0 0;
+            color: #d1d5db;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h2 {
+            margin-bottom: 6px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .stat-card .label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .section h3 {
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 14px 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f9fafb;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #6b7280;
+        }
+
+        .status-active {
+            font-weight: bold;
+            color: #15803d;
+        }
+
+        .status-inactive {
+            font-weight: bold;
+            color: #b91c1c;
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 18px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-wrapper {
+                overflow-x: auto;
+            }
+        }
+    </style>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        AutoTrack Connect | EDVANCE TECH Platform
+    </title>
+
+
+    <style>
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+
+        /* =====================================================
+           TOP BAR
+        ===================================================== */
+
+        .topbar {
+            background: #111827;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .topbar-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .brand p {
+            margin: 5px 0 0;
+            color: #d1d5db;
+            font-size: 14px;
+        }
+
+        .admin-label {
+            color: #d1d5db;
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           MAIN CONTAINER
+        ===================================================== */
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+
+        /* =====================================================
+           PAGE HEADING
+        ===================================================== */
+
+        .page-heading {
+            margin-bottom: 25px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .page-heading h2 {
+            margin: 0 0 6px;
+            font-size: 26px;
+        }
+
+        .page-heading p {
+            margin: 0;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .add-workshop-btn {
+            display: inline-block;
+
+            background: #111827;
+            color: white;
+
+            text-decoration: none;
+
+            padding: 12px 18px;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+
+            white-space: nowrap;
+
+            transition:
+                opacity 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .add-workshop-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+
+        /* =====================================================
+           STATISTICS
+        ===================================================== */
+
+        .stats-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 18px;
+
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 22px;
+
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.06);
+
+            border:
+                1px solid #eef0f2;
+        }
+
+        .stat-card .label {
+            color: #6b7280;
+
+            font-size: 14px;
+
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 30px;
+
+            font-weight: bold;
+
+            color: #111827;
+        }
+
+
+        /* =====================================================
+           SECTION
+        ===================================================== */
+
+        .section {
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 24px;
+
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.06);
+
+            border:
+                1px solid #eef0f2;
+        }
+
+        .section-heading {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .section-heading h3 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .section-heading p {
+            margin: 5px 0 0;
+
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .table-wrapper {
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 750px;
+        }
+
+        th,
+        td {
+            text-align: left;
+
+            padding: 14px 12px;
+
+            border-bottom:
+                1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f9fafb;
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.04em;
+
+            color: #6b7280;
+        }
+
+        tbody tr:hover {
+            background: #fafafa;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        /* =====================================================
+           STATUS BADGES
+        ===================================================== */
+
+        .status-badge {
+            display: inline-block;
+
+            padding: 6px 10px;
+
+            border-radius: 999px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .empty-state {
+            text-align: center;
+
+            padding: 35px 15px;
+
+            color: #6b7280;
+        }
+
+
+
+        /* =====================================================
+           MANAGE BUTTON
+        ===================================================== */
+
+        .manage-btn {
+            display: inline-block;
+            padding: 8px 14px;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .manage-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1000px) {
+
+            .stats-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .topbar {
+                padding: 18px;
+            }
+
+            .topbar-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .container {
+                padding: 18px;
+            }
+
+            .page-heading {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .add-workshop-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 18px;
+            }
+
+            .page-heading h2 {
+                font-size: 23px;
+            }
+
+            .stat-card .value {
+                font-size: 27px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <div class="topbar-inner">
+
+            <div class="brand">
+
+                <h1>
+                    AutoTrack Connect
+                </h1>
+
+                <p>
+                    EDVANCE TECH Platform Administration
+                </p>
+
+            </div>
+
+
+            <div class="admin-label">
+
+                {% if request.user.is_authenticated %}
+
+                    Platform Admin:
+                    <strong>
+                        {{ request.user.username }}
+                    </strong>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="container">
+
+
+        <!-- =================================================
+             PAGE HEADING
+        ================================================== -->
+
+        <div class="page-heading">
+
+            <div>
+
+                <h2>
+                    Platform Overview
+                </h2>
+
+                <p>
+                    Monitor connected workshops and activity
+                    across the AutoTrack Connect platform.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'platform_admin:add_workshop' %}"
+                class="add-workshop-btn"
+            >
+                + Add Workshop
+            </a>
+
+        </div>
+
+
+
+        <!-- =================================================
+             PLATFORM STATISTICS
+        ================================================== -->
+
+        <div class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <div class="label">
+                    Connected Workshops
+                </div>
+
+                <div class="value">
+                    {{ connected_workshops }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="label">
+                    Active Workshops
+                </div>
+
+                <div class="value">
+                    {{ active_workshops }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="label">
+                    Inactive Workshops
+                </div>
+
+                <div class="value">
+                    {{ inactive_workshops }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="label">
+                    Customers
+                </div>
+
+                <div class="value">
+                    {{ customer_count }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="label">
+                    Registered Vehicles
+                </div>
+
+                <div class="value">
+                    {{ vehicle_count }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="label">
+                    Total Repair Jobs
+                </div>
+
+                <div class="value">
+                    {{ total_jobs }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="label">
+                    Active Repair Jobs
+                </div>
+
+                <div class="value">
+                    {{ active_jobs }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="label">
+                    Completed Jobs
+                </div>
+
+                <div class="value">
+                    {{ completed_jobs }}
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             CONNECTED WORKSHOPS
+        ================================================== -->
+
+        <section class="section">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h3>
+                        Connected Workshops
+                    </h3>
+
+                    <p>
+                        Workshops currently registered on
+                        AutoTrack Connect.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Workshop
+                            </th>
+
+                            <th>
+                                Type
+                            </th>
+
+                            <th>
+                                Location
+                            </th>
+
+                            <th>
+                                Phone
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+
+                    <tbody>
+
+
+                        {% for workshop in workshops %}
+
+
+                            <tr>
+
+
+                                <td>
+
+                                    <strong>
+                                        {{ workshop.name }}
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ workshop.get_workshop_type_display }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ workshop.location|default:"—" }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ workshop.phone_number|default:"—" }}
+
+                                </td>
+
+
+                                <td>
+
+
+                                    {% if workshop.is_active %}
+
+                                        <span
+                                            class="
+                                                status-badge
+                                                status-active
+                                            "
+                                        >
+                                            Active
+                                        </span>
+
+                                    {% else %}
+
+                                        <span
+                                            class="
+                                                status-badge
+                                                status-inactive
+                                            "
+                                        >
+                                            Inactive
+                                        </span>
+
+                                    {% endif %}
+
+
+                                </td>
+
+
+                                <td>
+
+                                    <a
+                                        href="{% url 'platform_admin:workshop_detail' workshop.id %}"
+                                        class="manage-btn"
+                                    >
+                                        Manage
+                                    </a>
+
+                                </td>
+
+
+                            </tr>
+
+
+                        {% empty %}
+
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="empty-state"
+                                >
+
+                                    No workshops are connected yet.
+
+                                </td>
+
+                            </tr>
+
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+
+                </table>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</body>
+
+</html>

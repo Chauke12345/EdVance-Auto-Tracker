@@ -50,7 +50,7 @@
                 Welcome,
                 <strong>{{ request.user.username }}</strong>
 
-                —
+                â€”
 
                 {{ staff_profile.get_role_display }}
 
@@ -171,6 +171,26 @@
                 </span>
 
             </a>
+
+
+            <!-- MONTHLY REPORT -->
+
+            <a
+                href="{% url 'monthly_report' %}"
+                class="quick-action-card"
+            >
+
+                <strong>
+                    Monthly Report
+                </strong>
+
+                <span>
+                    View and print workshop monthly report
+                </span>
+
+            </a>
+
+
 
 
         </section>

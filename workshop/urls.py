@@ -1,4 +1,4 @@
-from django.urls import path
+﻿from django.urls import path
 from . import views
 
 
@@ -90,4 +90,11 @@ urlpatterns = [
         name="staff_logout"
     ),
 
+
+    path(
+        "reports/monthly/",
+        views.monthly_report,
+        name="monthly_report"
+    ),
 ]
+

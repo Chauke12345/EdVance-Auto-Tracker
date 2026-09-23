@@ -1,0 +1,598 @@
+﻿{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ workshop.name }} - {{ month_name }} {{ selected_year }} Report
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f3f6fa;
+            color: #172033;
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .report {
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(0,0,0,.08);
+            overflow: hidden;
+        }
+
+        .report-header {
+            background: #10233f;
+            color: #ffffff;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .brand h1 {
+            margin: 0 0 5px;
+            font-size: 30px;
+        }
+
+        .brand p {
+            margin: 0;
+            color: #d5dfec;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .report-title {
+            text-align: right;
+        }
+
+        .report-title h2 {
+            margin: 0 0 6px;
+            font-size: 22px;
+        }
+
+        .report-title p {
+            margin: 0;
+            color: #d5dfec;
+        }
+
+        .toolbar {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e4e8ee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-dark {
+            background: #10233f;
+            color: #ffffff;
+        }
+
+        .btn-light {
+            background: #eef2f7;
+            color: #10233f;
+        }
+
+        .btn-print {
+            background: #d5a63c;
+            color: #10233f;
+        }
+
+        .report-body {
+            padding: 30px;
+        }
+
+        .workshop-info {
+            margin-bottom: 25px;
+        }
+
+        .workshop-info h2 {
+            margin: 0 0 5px;
+            color: #10233f;
+        }
+
+        .workshop-info p {
+            margin: 0;
+            color: #687386;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 25px 0 35px;
+        }
+
+        .summary-card {
+            border: 1px solid #e0e5ec;
+            border-radius: 12px;
+            padding: 18px;
+            background: #fafbfd;
+        }
+
+        .summary-card .label {
+            font-size: 13px;
+            color: #6d7788;
+            margin-bottom: 8px;
+        }
+
+        .summary-card .value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #10233f;
+        }
+
+        .section-title {
+            margin: 10px 0 15px;
+            font-size: 20px;
+            color: #10233f;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            text-align: left;
+            background: #10233f;
+            color: #ffffff;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e3e7ed;
+            vertical-align: top;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .status {
+            font-weight: 700;
+        }
+
+        .empty-report {
+            padding: 30px;
+            text-align: center;
+            background: #f7f9fc;
+            border-radius: 12px;
+            color: #687386;
+        }
+
+        .report-footer {
+            border-top: 1px solid #e4e8ee;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            color: #778194;
+            font-size: 12px;
+        }
+
+        @media (max-width: 850px) {
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .report-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .report-title {
+                text-align: left;
+            }
+
+        }
+
+        @media (max-width: 520px) {
+
+            .page {
+                margin: 0;
+                padding: 0;
+            }
+
+            .report {
+                border-radius: 0;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .report-body,
+            .toolbar,
+            .report-header {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+        }
+
+
+        /* =====================================================
+           PRINT VERSION
+        ===================================================== */
+
+        @media print {
+
+            @page {
+                size: A4 landscape;
+                margin: 10mm;
+            }
+
+            body {
+                background: #ffffff;
+            }
+
+            .page {
+                max-width: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .report {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .report-header {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            th {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .summary-card {
+                break-inside: avoid;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            th,
+            td {
+                padding: 8px;
+            }
+
+            tr {
+                break-inside: avoid;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <div class="report">
+
+        <!-- =====================================================
+             REPORT HEADER
+        ====================================================== -->
+
+        <header class="report-header">
+
+            <div class="brand">
+
+                <h1>AutoTrack</h1>
+
+                <p>
+                    BY EDVANCE TECH
+                </p>
+
+            </div>
+
+
+            <div class="report-title">
+
+                <h2>
+                    Monthly Workshop Report
+                </h2>
+
+                <p>
+                    {{ month_name }} {{ selected_year }}
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================================
+             REPORT CONTROLS
+        ====================================================== -->
+
+        <div class="toolbar no-print">
+
+            <div class="toolbar-group">
+
+                <a
+                    href="{% url 'dashboard' %}"
+                    class="btn btn-light"
+                >
+                    &#8592; Dashboard
+                </a>
+
+                <a
+                    href="?month={{ previous_month }}&year={{ previous_year }}"
+                    class="btn btn-light"
+                >
+                    &#8592; Previous Month
+                </a>
+
+                <a
+                    href="?month={{ next_month }}&year={{ next_year }}"
+                    class="btn btn-light"
+                >
+                    Next Month &#8594;
+                </a>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn btn-print"
+                onclick="window.print()"
+            >
+                Print Monthly Report
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             REPORT CONTENT
+        ====================================================== -->
+
+        <main class="report-body">
+
+            <div class="workshop-info">
+
+                <h2>
+                    {{ workshop.name }}
+                </h2>
+
+                <p>
+                    Workshop Activity Report —
+                    {{ month_name }} {{ selected_year }}
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 SUMMARY
+            ================================================== -->
+
+            <div class="summary-grid">
+
+                <div class="summary-card">
+                    <div class="label">Total Repair Jobs</div>
+                    <div class="value">{{ total_jobs }}</div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="label">Collected</div>
+                    <div class="value">{{ collected_jobs }}</div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="label">Active Jobs</div>
+                    <div class="value">{{ active_jobs }}</div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="label">Ready For Collection</div>
+                    <div class="value">{{ ready_jobs }}</div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="label">Awaiting Parts</div>
+                    <div class="value">{{ awaiting_parts_jobs }}</div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="label">Customers Served</div>
+                    <div class="value">{{ customer_count }}</div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="label">Vehicles Handled</div>
+                    <div class="value">{{ vehicle_count }}</div>
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 JOB LIST
+            ================================================== -->
+
+            <h3 class="section-title">
+                Repair Job Summary
+            </h3>
+
+
+            {% if jobs %}
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Date</th>
+                                <th>Tracking Number</th>
+                                <th>Customer</th>
+                                <th>Vehicle</th>
+                                <th>Registration</th>
+                                <th>Status</th>
+                                <th>Assigned To</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for job in jobs %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ job.created_at|date:"d M Y" }}
+                                    </td>
+
+                                    <td>
+                                        {{ job.tracking_number }}
+                                    </td>
+
+                                    <td>
+                                        {{ job.vehicle.customer.full_name }}
+                                    </td>
+
+                                    <td>
+                                        {{ job.vehicle.make }}
+                                        {{ job.vehicle.model }}
+                                    </td>
+
+                                    <td>
+                                        {{ job.vehicle.registration_number }}
+                                    </td>
+
+                                    <td class="status">
+                                        {{ job.get_status_display }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if job.assigned_to %}
+
+                                            {{ job.assigned_to.user.username }}
+
+                                        {% else %}
+
+                                            —
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-report">
+
+                    No repair jobs were recorded for
+                    {{ month_name }} {{ selected_year }}.
+
+                </div>
+
+            {% endif %}
+
+        </main>
+
+
+        <!-- =====================================================
+             FOOTER
+        ====================================================== -->
+
+        <footer class="report-footer">
+
+            <span>
+                Generated by AutoTrack
+            </span>
+
+            <span>
+                EDVANCE TECH
+            </span>
+
+        </footer>
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>

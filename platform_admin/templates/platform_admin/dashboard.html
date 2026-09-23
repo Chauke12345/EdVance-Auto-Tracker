@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -565,6 +565,25 @@
                         {{ request.user.username }}
                     </strong>
 
+                    <form method="post" action="{% url 'platform_admin:logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button
+                            type="submit"
+                            style="
+                                margin-left: 12px;
+                                padding: 8px 15px;
+                                border: none;
+                                border-radius: 8px;
+                                background: #10233f;
+                                color: #ffffff;
+                                font-weight: 600;
+                                cursor: pointer;
+                            "
+                        >
+                            Logout
+                        </button>
+                    </form>
+
                 {% endif %}
 
             </div>
@@ -820,14 +839,14 @@
 
                                 <td>
 
-                                    {{ workshop.location|default:"—" }}
+                                    {{ workshop.location|default:"â€”" }}
 
                                 </td>
 
 
                                 <td>
 
-                                    {{ workshop.phone_number|default:"—" }}
+                                    {{ workshop.phone_number|default:"â€”" }}
 
                                 </td>
 
@@ -915,3 +934,4 @@
 </body>
 
 </html>
+

@@ -1,3 +1,4 @@
+﻿from django.contrib.auth import logout
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -473,3 +474,13 @@ def reset_workshop_staff_password(request, workshop_id, staff_id):
             "staff_member": staff_member,
         },
     )
+
+# =========================================================
+# PLATFORM LOGOUT
+# =========================================================
+
+@require_POST
+def platform_logout(request):
+    logout(request)
+    return redirect("home")
+

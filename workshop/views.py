@@ -896,3 +896,139 @@ def customer_tracking(request):
         context
     )
 
+
+
+# =========================================================
+# WORKSHOP MONTHLY REPORT
+# =========================================================
+
+@login_required
+def monthly_report(request):
+
+    from datetime import date
+    from django.db.models import Q
+
+    try:
+        staff_profile = request.user.workshop_staff_profile
+    except StaffProfile.DoesNotExist:
+        messages.error(
+            request,
+            "This account is not connected to a workshop."
+        )
+        return redirect("staff_login")
+
+    if not staff_profile.is_active or not staff_profile.workshop.is_active:
+        logout(request)
+        return redirect("staff_login")
+
+    workshop = staff_profile.workshop
+
+    today = date.today()
+
+    try:
+        selected_year = int(
+            request.GET.get("year", today.year)
+        )
+        selected_month = int(
+            request.GET.get("month", today.month)
+        )
+
+        if selected_month < 1 or selected_month > 12:
+            raise ValueError
+
+    except (TypeError, ValueError):
+        selected_year = today.year
+        selected_month = today.month
+
+    jobs = (
+        RepairJob.objects
+        .filter(
+            workshop=workshop,
+            created_at__year=selected_year,
+            created_at__month=selected_month,
+        )
+        .select_related(
+            "vehicle",
+            "vehicle__customer",
+            "assigned_to",
+        )
+        .order_by("-created_at")
+    )
+
+    total_jobs = jobs.count()
+
+    collected_jobs = jobs.filter(
+        status="collected"
+    ).count()
+
+    awaiting_parts_jobs = jobs.filter(
+        status="awaiting_parts"
+    ).count()
+
+    ready_jobs = jobs.filter(
+        status="ready"
+    ).count()
+
+    active_jobs = jobs.exclude(
+        status="collected"
+    ).count()
+
+    customer_count = (
+        jobs.values("vehicle__customer_id")
+        .distinct()
+        .count()
+    )
+
+    vehicle_count = (
+        jobs.values("vehicle_id")
+        .distinct()
+        .count()
+    )
+
+    month_name = date(
+        selected_year,
+        selected_month,
+        1
+    ).strftime("%B")
+
+    if selected_month == 1:
+        previous_month = 12
+        previous_year = selected_year - 1
+    else:
+        previous_month = selected_month - 1
+        previous_year = selected_year
+
+    if selected_month == 12:
+        next_month = 1
+        next_year = selected_year + 1
+    else:
+        next_month = selected_month + 1
+        next_year = selected_year
+
+    context = {
+        "workshop": workshop,
+        "jobs": jobs,
+
+        "selected_year": selected_year,
+        "selected_month": selected_month,
+        "month_name": month_name,
+
+        "total_jobs": total_jobs,
+        "collected_jobs": collected_jobs,
+        "active_jobs": active_jobs,
+        "awaiting_parts_jobs": awaiting_parts_jobs,
+        "ready_jobs": ready_jobs,
+        "customer_count": customer_count,
+        "vehicle_count": vehicle_count,
+
+        "previous_month": previous_month,
+        "previous_year": previous_year,
+        "next_month": next_month,
+        "next_year": next_year,
+    }
+
+    return render(
+        request,
+        "workshop/monthly_report.html",
+        context
+    )

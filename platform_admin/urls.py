@@ -1,4 +1,4 @@
-from django.urls import path
+﻿from django.urls import path
 from . import views
 
 
@@ -7,6 +7,10 @@ app_name = "platform_admin"
 
 urlpatterns = [
 
+    # =========================================================
+    # STAFF PASSWORD RESET
+    # =========================================================
+
     path(
         "workshops/<int:workshop_id>/staff/<int:staff_id>/reset-password/",
         views.reset_workshop_staff_password,
@@ -14,12 +18,20 @@ urlpatterns = [
     ),
 
 
+    # =========================================================
+    # STAFF EDIT
+    # =========================================================
+
     path(
         "workshops/<int:workshop_id>/staff/<int:staff_id>/edit/",
         views.edit_workshop_staff,
         name="edit_workshop_staff",
     ),
 
+
+    # =========================================================
+    # STAFF STATUS
+    # =========================================================
 
     path(
         "workshops/<int:workshop_id>/staff/<int:staff_id>/toggle-status/",
@@ -38,13 +50,16 @@ urlpatterns = [
         name="workshop_staff_detail",
     ),
 
-
     path(
         "workshops/<int:workshop_id>/staff/add/",
         views.add_workshop_staff,
         name="add_workshop_staff",
     ),
 
+
+    # =========================================================
+    # WORKSHOP STATUS
+    # =========================================================
 
     path(
         "workshops/<int:workshop_id>/toggle-status/",
@@ -61,6 +76,17 @@ urlpatterns = [
         "",
         views.platform_dashboard,
         name="dashboard",
+    ),
+
+
+    # =========================================================
+    # PLATFORM LOGOUT
+    # =========================================================
+
+    path(
+        "logout/",
+        views.platform_logout,
+        name="logout",
     ),
 
 

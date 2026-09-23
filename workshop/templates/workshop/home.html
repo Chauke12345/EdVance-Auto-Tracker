@@ -1,0 +1,1509 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AutoTrack | Workshop Management & Vehicle Repair Tracking</title>
+
+    <meta name="description"
+          content="AutoTrack by EDVANCE TECH helps workshops manage repair jobs while giving customers a simple way to track vehicle repair progress.">
+
+    <link rel="stylesheet" href="{% static 'workshop/css/style.css' %}">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #10233f;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        .home-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e7ebf1;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .home-nav {
+            max-width: 1180px;
+            margin: auto;
+            min-height: 78px;
+            padding: 12px 24px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #10233f;
+        }
+
+        .brand-mark {
+            width: 46px;
+            height: 46px;
+            border-radius: 13px;
+            background: #10233f;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -2px;
+
+            box-shadow: 0 8px 20px rgba(16, 35, 63, 0.18);
+        }
+
+        .brand-name {
+            display: block;
+            font-size: 21px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .brand-by {
+            display: block;
+            margin-top: 5px;
+            color: #6d7888;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.7px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-link {
+            color: #263b57;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 11px 15px;
+            border-radius: 9px;
+        }
+
+        .nav-link:hover {
+            background: #f1f4f8;
+        }
+
+        .nav-login {
+            background: #10233f;
+            color: white;
+        }
+
+        .nav-login:hover {
+            background: #1a365c;
+        }
+
+        /* =========================================
+           HERO
+        ========================================= */
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            background:
+                linear-gradient(
+                    100deg,
+                    rgba(8, 25, 48, 0.98) 0%,
+                    rgba(11, 33, 60, 0.94) 48%,
+                    rgba(14, 41, 71, 0.86) 100%
+                );
+            color: white;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            right: -130px;
+            top: -190px;
+            background: rgba(255, 171, 46, 0.10);
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            right: 15%;
+            bottom: -260px;
+            border: 70px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .hero-inner {
+            max-width: 1180px;
+            margin: auto;
+            padding: 88px 24px;
+
+            display: grid;
+            grid-template-columns: 1.08fr 0.92fr;
+            align-items: center;
+            gap: 60px;
+
+            position: relative;
+            z-index: 2;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 8px 13px;
+            border-radius: 999px;
+
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.13);
+
+            color: #ffbd5a;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            margin: 20px 0 18px;
+            max-width: 700px;
+
+            font-size: clamp(42px, 6vw, 70px);
+            line-height: 1.02;
+            letter-spacing: -2.5px;
+        }
+
+        .hero h1 span {
+            color: #ffad32;
+        }
+
+        .hero-copy {
+            max-width: 650px;
+            margin: 0;
+
+            color: #cbd5e2;
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 34px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+            padding: 0 22px;
+            border-radius: 10px;
+
+            font-size: 14px;
+            font-weight: 800;
+
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: #ffad32;
+            color: #10233f;
+            box-shadow: 0 12px 30px rgba(255, 173, 50, 0.22);
+        }
+
+        .btn-secondary {
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        /* =========================================
+           HERO VISUAL
+        ========================================= */
+
+        .hero-visual {
+            position: relative;
+            min-height: 420px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .visual-card {
+            width: 100%;
+            min-height: 360px;
+            border-radius: 28px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,0.13),
+                    rgba(255,255,255,0.04)
+                );
+
+            border: 1px solid rgba(255,255,255,0.13);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.25);
+
+            padding: 36px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+
+            width: calc(100% - 40px);
+            height: 245px;
+
+            object-fit: cover;
+            object-position: center;
+
+            border-radius: 18px;
+
+            box-shadow: 0 22px 45px rgba(0, 0, 0, 0.30);
+        }
+
+        .car-shape {
+            position: absolute;
+            width: 78%;
+            height: 150px;
+            right: -2%;
+            bottom: 65px;
+
+            background: linear-gradient(
+                135deg,
+                #f3f5f7,
+                #9fa9b4
+            );
+
+            border-radius: 80px 120px 25px 25px;
+            transform: skewX(-7deg);
+
+            box-shadow: 0 25px 35px rgba(0,0,0,0.35);
+        }
+
+        .car-shape::before {
+            content: "";
+            position: absolute;
+            width: 53%;
+            height: 75px;
+            top: -54px;
+            left: 23%;
+
+            background: #b8c1cb;
+            border-radius: 80px 100px 0 0;
+            transform: skewX(12deg);
+        }
+
+        .wheel {
+            position: absolute;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: #111923;
+            border: 9px solid #313d49;
+            bottom: 38px;
+            z-index: 4;
+        }
+
+        .wheel-one {
+            left: 34%;
+        }
+
+        .wheel-two {
+            right: 8%;
+        }
+
+        .visual-label {
+            position: relative;
+            z-index: 5;
+        }
+
+        .visual-label strong {
+            display: block;
+            color: white;
+            font-size: 23px;
+            margin-bottom: 7px;
+        }
+
+        .visual-label span {
+            color: #b8c7d8;
+            font-size: 14px;
+        }
+
+        .status-chip {
+            position: absolute;
+            z-index: 6;
+            right: 25px;
+            top: 25px;
+
+            background: #ffffff;
+            color: #10233f;
+
+            padding: 11px 14px;
+            border-radius: 10px;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            box-shadow: 0 12px 25px rgba(0,0,0,0.18);
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #25b56b;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        /* =========================================
+           QUICK ACCESS
+        ========================================= */
+
+        .quick-access {
+            max-width: 1100px;
+            margin: -42px auto 0;
+            padding: 0 24px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .quick-grid {
+            background: white;
+            border-radius: 18px;
+            padding: 14px;
+
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+
+            box-shadow: 0 18px 50px rgba(24, 46, 76, 0.13);
+        }
+
+        .quick-card {
+            padding: 22px;
+            border-radius: 13px;
+            color: #10233f;
+
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            transition: 0.2s ease;
+        }
+
+        .quick-card:hover {
+            background: #f6f8fb;
+            transform: translateY(-2px);
+        }
+
+        .quick-icon {
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+            background: #eef3f8;
+
+            font-size: 21px;
+        }
+
+        .quick-card strong {
+            display: block;
+            font-size: 15px;
+        }
+
+        .quick-card span {
+            display: block;
+            margin-top: 4px;
+            color: #748093;
+            font-size: 12px;
+        }
+
+        /* =========================================
+           FEATURES
+        ========================================= */
+
+        .section {
+            max-width: 1180px;
+            margin: auto;
+            padding: 100px 24px;
+        }
+
+        .section-heading {
+            max-width: 700px;
+            margin: 0 auto 48px;
+            text-align: center;
+        }
+
+        .section-heading small {
+            color: #e99114;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .section-heading h2 {
+            margin: 12px 0 15px;
+            font-size: clamp(31px, 4vw, 45px);
+            letter-spacing: -1.5px;
+        }
+
+        .section-heading p {
+            color: #69778a;
+            line-height: 1.7;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid #e8edf3;
+            border-radius: 17px;
+            padding: 30px;
+
+            box-shadow: 0 8px 30px rgba(28, 48, 76, 0.05);
+        }
+
+        .feature-number {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #10233f;
+            color: #ffad32;
+
+            font-weight: 900;
+            margin-bottom: 23px;
+        }
+
+        .feature-card h3 {
+            margin: 0 0 12px;
+            font-size: 19px;
+        }
+
+        .feature-card p {
+            margin: 0;
+            color: #718095;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* =========================================
+           CUSTOMER CTA
+        ========================================= */
+
+        .tracking-section {
+            padding: 0 24px 100px;
+        }
+
+        .tracking-box {
+            max-width: 1132px;
+            margin: auto;
+
+            background: #10233f;
+            color: white;
+
+            border-radius: 24px;
+            padding: 58px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+
+            box-shadow: 0 25px 60px rgba(16,35,63,0.16);
+        }
+
+        .tracking-box h2 {
+            margin: 0 0 12px;
+            font-size: 34px;
+        }
+
+        .tracking-box p {
+            margin: 0;
+            color: #b9c7d8;
+            line-height: 1.6;
+            max-width: 650px;
+        }
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .footer {
+            background: #091a2f;
+            color: #b8c5d5;
+            padding: 45px 24px;
+        }
+
+        .footer-inner {
+            max-width: 1180px;
+            margin: auto;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .footer strong {
+            color: white;
+        }
+
+        .footer p {
+            margin: 7px 0 0;
+            font-size: 12px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #d2dbe7;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 850px) {
+
+            .home-nav {
+                min-height: 70px;
+            }
+
+            .nav-links .nav-link:not(.nav-login) {
+                display: none;
+            }
+
+            .hero-inner {
+                grid-template-columns: 1fr;
+                padding-top: 65px;
+                padding-bottom: 90px;
+                gap: 40px;
+            }
+
+            .hero h1 {
+                font-size: 48px;
+            }
+
+            .hero-visual {
+                min-height: 330px;
+            }
+
+            .visual-card {
+                min-height: 310px;
+            }
+
+            .quick-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tracking-box {
+                padding: 38px 28px;
+                display: block;
+            }
+
+            .tracking-box .btn {
+                margin-top: 25px;
+                width: 100%;
+            }
+
+            .footer-inner {
+                display: block;
+                text-align: center;
+            }
+
+            .footer-links {
+                justify-content: center;
+                margin-top: 25px;
+            }
+        }
+
+        @media (max-width: 520px) {
+
+            .home-nav {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .brand-mark {
+                width: 40px;
+                height: 40px;
+            }
+
+            .brand-name {
+                font-size: 18px;
+            }
+
+            .brand-by {
+                font-size: 9px;
+            }
+
+            .nav-login {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+
+            .hero-inner {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .hero h1 {
+                font-size: 41px;
+                letter-spacing: -1.8px;
+            }
+
+            .hero-copy {
+                font-size: 16px;
+            }
+
+            .hero-actions {
+                display: grid;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .hero-visual {
+                min-height: 270px;
+            }
+
+            .visual-card {
+                min-height: 260px;
+                padding: 25px;
+            }
+
+            .hero-image {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+
+            width: calc(100% - 40px);
+            height: 245px;
+
+            object-fit: cover;
+            object-position: center;
+
+            border-radius: 18px;
+
+            box-shadow: 0 22px 45px rgba(0, 0, 0, 0.30);
+        }
+
+        .car-shape {
+                width: 85%;
+                height: 110px;
+            }
+
+            .car-shape::before {
+                height: 55px;
+                top: -40px;
+            }
+
+            .wheel {
+                width: 55px;
+                height: 55px;
+                bottom: 45px;
+            }
+
+            .quick-access {
+                padding: 0 16px;
+            }
+
+            .section {
+                padding: 75px 18px;
+            }
+
+            .tracking-section {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .tracking-box h2 {
+                font-size: 27px;
+            }
+        }
+    </style>
+
+<style id="autotrack-mobile-fixes">
+
+/* =========================================================
+   AUTOTRACK MOBILE OPTIMISATION
+========================================================= */
+
+@media (max-width: 768px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    /* HEADER */
+
+    .home-header {
+        position: sticky;
+        top: 0;
+    }
+
+    .home-nav {
+        min-height: 66px;
+        padding: 10px 16px;
+        gap: 10px;
+    }
+
+    .brand {
+        gap: 9px;
+        min-width: 0;
+    }
+
+    .brand-mark {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        border-radius: 10px;
+        font-size: 17px;
+    }
+
+    .brand-name {
+        font-size: 17px;
+    }
+
+    .brand-by {
+        font-size: 8px;
+        letter-spacing: 0.4px;
+    }
+
+    .nav-links {
+        gap: 0;
+    }
+
+    .nav-links .nav-link:not(.nav-login) {
+        display: none;
+    }
+
+    .nav-login {
+        white-space: nowrap;
+        padding: 10px 12px;
+        font-size: 11px;
+    }
+
+
+    /* HERO */
+
+    .hero-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 34px;
+
+        padding:
+            52px
+            18px
+            78px;
+    }
+
+    .hero-inner > div {
+        width: 100%;
+    }
+
+    .eyebrow {
+        font-size: 10px;
+        padding: 7px 11px;
+    }
+
+    .hero h1 {
+        margin-top: 17px;
+        margin-bottom: 17px;
+
+        font-size: clamp(38px, 11vw, 52px);
+        line-height: 1.02;
+        letter-spacing: -1.8px;
+    }
+
+    .hero-copy {
+        font-size: 15px;
+        line-height: 1.65;
+    }
+
+    .hero-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 11px;
+
+        margin-top: 27px;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+        min-height: 52px;
+    }
+
+
+    /* HERO IMAGE */
+
+    .hero-visual {
+        width: 100%;
+        min-height: 300px;
+    }
+
+    .visual-card {
+        width: 100%;
+        min-height: 300px;
+
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    .visual-label {
+        position: relative;
+        z-index: 10;
+    }
+
+    .visual-label strong {
+        font-size: 18px;
+    }
+
+    .visual-label span {
+        font-size: 12px;
+    }
+
+    .status-chip {
+        top: 18px;
+        right: 18px;
+
+        padding: 8px 10px;
+        font-size: 9px;
+    }
+
+    .hero-image {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+
+        width: calc(100% - 24px);
+        height: 205px;
+
+        object-fit: cover;
+        object-position: center;
+
+        border-radius: 14px;
+    }
+
+
+    /* QUICK ACCESS */
+
+    .quick-access {
+        margin-top: -38px;
+        padding: 0 14px;
+    }
+
+    .quick-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+
+        padding: 9px;
+        gap: 5px;
+
+        border-radius: 16px;
+    }
+
+    .quick-card {
+        min-height: 76px;
+        padding: 15px;
+        gap: 14px;
+    }
+
+    .quick-icon {
+        width: 43px;
+        height: 43px;
+        min-width: 43px;
+
+        font-size: 19px;
+    }
+
+    .quick-card strong {
+        font-size: 14px;
+    }
+
+    .quick-card span {
+        font-size: 11px;
+    }
+
+
+    /* FEATURES */
+
+    .section {
+        padding:
+            72px
+            16px;
+    }
+
+    .section-heading {
+        margin-bottom: 32px;
+    }
+
+    .section-heading h2 {
+        font-size: 30px;
+        line-height: 1.12;
+    }
+
+    .section-heading p {
+        font-size: 14px;
+    }
+
+    .feature-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .feature-card {
+        padding: 23px;
+    }
+
+    .feature-number {
+        width: 42px;
+        height: 42px;
+        margin-bottom: 18px;
+    }
+
+
+    /* TRACKING CTA */
+
+    .tracking-section {
+        padding:
+            0
+            14px
+            70px;
+    }
+
+    .tracking-box {
+        display: block;
+
+        padding: 30px 22px;
+        border-radius: 18px;
+    }
+
+    .tracking-box h2 {
+        font-size: 27px;
+        line-height: 1.15;
+    }
+
+    .tracking-box p {
+        font-size: 14px;
+    }
+
+    .tracking-box .btn {
+        width: 100%;
+        margin-top: 23px;
+    }
+
+
+    /* FOOTER */
+
+    .footer {
+        padding:
+            38px
+            18px;
+    }
+
+    .footer-inner {
+        display: block;
+        text-align: center;
+    }
+
+    .footer-links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        gap: 12px;
+        margin-top: 25px;
+    }
+
+    .footer-links a {
+        padding: 9px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 390px) {
+
+    .brand-by {
+        display: none;
+    }
+
+    .brand-name {
+        font-size: 16px;
+    }
+
+    .nav-login {
+        padding: 9px 10px;
+        font-size: 10px;
+    }
+
+    .hero-inner {
+        padding-top: 42px;
+    }
+
+    .hero h1 {
+        font-size: 37px;
+    }
+
+    .hero-visual {
+        min-height: 270px;
+    }
+
+    .visual-card {
+        min-height: 270px;
+    }
+
+    .hero-image {
+        height: 185px;
+    }
+
+    .status-chip {
+        display: none;
+    }
+
+    .footer-links {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+
+    <!-- AutoTrack Branding -->
+    <link rel="icon"
+          type="image/png"
+          href="{% static 'workshop/images/autotrack-app-icon.png' %}">
+
+    <link rel="apple-touch-icon"
+          href="{% static 'workshop/images/autotrack-app-icon.png' %}">
+
+    <meta name="theme-color" content="#10233f">
+
+
+<style id="autotrack-branding">
+
+.brand-logo-image {
+    width: 48px;
+    height: 48px;
+
+    object-fit: cover;
+
+    border-radius: 13px;
+
+    box-shadow:
+        0 8px 22px rgba(16, 35, 63, 0.20);
+
+    flex-shrink: 0;
+}
+
+
+/* Mobile AutoTrack logo */
+
+@media (max-width: 768px) {
+
+    .brand-logo-image {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="home-header">
+
+    <nav class="home-nav">
+
+        <a href="{% url 'home' %}" class="brand">
+
+            <img src="{% static 'workshop/images/autotrack-app-icon.png' %}" alt="AutoTrack" class="brand-logo-image">
+
+            <div>
+                <span class="brand-name">AutoTrack</span>
+                <span class="brand-by">BY EDVANCE TECH</span>
+            </div>
+
+        </a>
+
+        <div class="nav-links">
+
+            <a href="{% url 'home' %}" class="nav-link">
+                Home
+            </a>
+
+            <a href="{% url 'customer_tracking' %}" class="nav-link">
+                Track Repair
+            </a>
+
+            <a href="/platform/" class="nav-link">
+                Platform Admin
+            </a>
+
+            <a href="{% url 'staff_login' %}" class="nav-link nav-login">
+                Workshop Login
+            </a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main>
+
+    <!-- =========================================
+         HERO
+    ========================================== -->
+
+    <section class="hero">
+
+        <div class="hero-inner">
+
+            <div>
+
+                <span class="eyebrow">
+                    Workshop Management Platform
+                </span>
+
+                <h1>
+                    Smarter workshops.
+                    <span>Better customer updates.</span>
+                </h1>
+
+                <p class="hero-copy">
+                    AutoTrack gives workshops one place to manage customers,
+                    vehicles and repair jobs while customers can follow their
+                    vehicle's repair progress from check-in to collection.
+                </p>
+
+                <div class="hero-actions">
+
+                    <a href="{% url 'customer_tracking' %}"
+                       class="btn btn-primary">
+                        Track Your Repair
+                    </a>
+
+                    <a href="{% url 'staff_login' %}"
+                       class="btn btn-secondary">
+                        Workshop Login
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="hero-visual">
+
+                <div class="visual-card">
+
+                    <div class="visual-label">
+                        <strong>Vehicle Repair Tracking</strong>
+                        <span>From check-in to collection.</span>
+                    </div>
+
+                    <div class="status-chip">
+                        <span class="status-dot"></span>
+                        Repair In Progress
+                    </div>
+
+                    <img
+                        src="{% static 'workshop/images/autotrack-workshop-hero.png' %}"
+                        alt="AutoTrack workshop and vehicle management"
+                        class="hero-image"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         QUICK ACCESS
+    ========================================== -->
+
+    <section class="quick-access">
+
+        <div class="quick-grid">
+
+            <a href="{% url 'staff_login' %}"
+               class="quick-card">
+
+                <div class="quick-icon">&#9874;</div>
+
+                <div>
+                    <strong>Workshop Login</strong>
+                    <span>Access workshop operations</span>
+                </div>
+
+            </a>
+
+
+            <a href="{% url 'customer_tracking' %}"
+               class="quick-card">
+
+                <div class="quick-icon">&#8981;</div>
+
+                <div>
+                    <strong>Track Your Repair</strong>
+                    <span>Check your vehicle progress</span>
+                </div>
+
+            </a>
+
+
+            <a href="/platform/"
+               class="quick-card">
+
+                <div class="quick-icon">&#9881;</div>
+
+                <div>
+                    <strong>Platform Administration</strong>
+                    <span>EDVANCE TECH management</span>
+                </div>
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         FEATURES
+    ========================================== -->
+
+    <section class="section">
+
+        <div class="section-heading">
+
+            <small>Built for modern workshops</small>
+
+            <h2>
+                Everything needed to keep repair work moving
+            </h2>
+
+            <p>
+                AutoTrack connects the workshop workflow with the customer
+                experience, keeping repair information organised and easy
+                to access.
+            </p>
+
+        </div>
+
+
+        <div class="feature-grid">
+
+            <article class="feature-card">
+
+                <div class="feature-number">01</div>
+
+                <h3>Repair Job Management</h3>
+
+                <p>
+                    Create repair jobs, assign staff, record workshop notes,
+                    upload progress photos and move vehicles through each
+                    repair stage.
+                </p>
+
+            </article>
+
+
+            <article class="feature-card">
+
+                <div class="feature-number">02</div>
+
+                <h3>Customer Tracking</h3>
+
+                <p>
+                    Customers can use their tracking details to see the
+                    vehicle, workshop, current repair status and complete
+                    repair progress history.
+                </p>
+
+            </article>
+
+
+            <article class="feature-card">
+
+                <div class="feature-number">03</div>
+
+                <h3>Multi-Workshop Platform</h3>
+
+                <p>
+                    EDVANCE TECH can connect and manage multiple independent
+                    workshops while each workshop operates within its own
+                    account and data.
+                </p>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         TRACKING CTA
+    ========================================== -->
+
+    <section class="tracking-section">
+
+        <div class="tracking-box">
+
+            <div>
+
+                <h2>
+                    Is your vehicle currently being repaired?
+                </h2>
+
+                <p>
+                    Use AutoTrack customer tracking to follow the repair
+                    process and see the latest status provided by your
+                    workshop.
+                </p>
+
+            </div>
+
+            <a href="{% url 'customer_tracking' %}"
+               class="btn btn-primary">
+                Track Vehicle
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="footer-inner">
+
+        <div>
+            <strong>AutoTrack</strong>
+            <p>
+                A workshop management platform by EDVANCE TECH.
+            </p>
+        </div>
+
+        <div class="footer-links">
+
+            <a href="{% url 'home' %}">
+                Home
+            </a>
+
+            <a href="{% url 'customer_tracking' %}">
+                Customer Tracking
+            </a>
+
+            <a href="{% url 'staff_login' %}">
+                Workshop Login
+            </a>
+
+            <a href="/platform/">
+                Platform Admin
+            </a>
+
+        </div>
+
+    </div>
+
+</footer>
+
+</body>
+</html>
+
+
+
+
+
+
+

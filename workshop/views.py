@@ -25,6 +25,17 @@ from .forms import (
 # STAFF LOGIN
 # =========================================================
 
+
+# =========================================================
+# PUBLIC HOME PAGE
+# =========================================================
+
+def home(request):
+    return render(
+        request,
+        "workshop/home.html"
+    )
+
 def staff_login(request):
 
     # Already logged in
@@ -884,3 +895,4 @@ def customer_tracking(request):
         "workshop/customer_tracking.html",
         context
     )
+

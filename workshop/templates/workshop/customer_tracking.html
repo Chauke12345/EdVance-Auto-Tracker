@@ -1,4 +1,4 @@
-{% load static %}
+﻿{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -62,7 +62,25 @@
 
         <section class="card">
 
-            <h1>Track Your Repair</h1>
+            
+<div style="margin-bottom: 20px;">
+    <a href="{% url 'home' %}"
+       style="
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #10233f;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+       ">
+        &#8592; Back to Home
+    </a>
+</div>
+<h1>Track Your Repair</h1>
 
             <p>
                 Check the current progress of your vehicle repair.

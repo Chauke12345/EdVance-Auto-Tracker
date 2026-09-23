@@ -204,3 +204,17 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
+
+# =========================================================
+# MEDIA FILES
+# =========================================================
+# Local development -> project media folder
+# Railway production -> persistent /media volume
+# =========================================================
+
+MEDIA_URL = "/media/"
+
+if os.environ.get("RAILWAY_ENVIRONMENT"):
+    MEDIA_ROOT = Path("/media")
+else:
+    MEDIA_ROOT = BASE_DIR / "media"
